@@ -34,6 +34,34 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <widget class="QWidget" name="tab_common_setting">
+      <attribute name="title">
+       <string>通用设置</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="checkBox_is_hide_when_mainWindow_clockButton_click">
+         <property name="text">
+          <string>在按下主窗口关闭按钮时隐藏页面</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="checkBox_is_sendTips_when_window_will_be_close">
+         <property name="text">
+          <string>在关闭程序时显示提示信息</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="checkBox_is_hide_when_app_start">
+         <property name="text">
+          <string>启动时隐藏主窗口</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tab_timer_setting">
       <attribute name="title">
        <string>计时器设置</string>

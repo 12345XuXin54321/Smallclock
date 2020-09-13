@@ -104,6 +104,15 @@ Clock_Main_Window::Clock_Main_Window(QWidget *parent)
 
     clocktimer_initialization();
     read_data();
+
+    if(m_clock_setting_dialog->get_is_hide_when_app_start() == true)
+    {
+        mainWindow_hide();
+    }
+    else
+    {
+        mainWindow_show();
+    }
 }
 
 Clock_Main_Window::~Clock_Main_Window()
@@ -267,21 +276,34 @@ void Clock_Main_Window::mainWindow_hide()
 
 void Clock_Main_Window::closeEvent(QCloseEvent *event)
 {
-    mainWindow_show();
-    QMessageBox message_box(QMessageBox::Icon::NoIcon,
-                            "Small Clock 即将关闭",
-                            "您确定要继续吗？",
-                            QMessageBox::StandardButton::Ok | QMessageBox::StandardButton::Cancel,
-                            this,
-                            Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
-
-    if(message_box.exec() == QMessageBox::StandardButton::Cancel)
+    if(event->spontaneous() == true) //事件来自底层窗口系统
     {
-        event->ignore();
+        if(m_clock_setting_dialog->get_is_hide_when_mainWindow_clockButton_click() == true)
+        {
+            event->ignore();
+            this->mainWindow_hide();
+            return;
+        }
     }
-    else
+
+    if(m_clock_setting_dialog->get_is_sendTips_when_window_will_be_close() == true)
     {
-        save_data();
+        mainWindow_show();
+        QMessageBox message_box(QMessageBox::Icon::NoIcon,
+                                "Small Clock 即将关闭",
+                                "您确定要继续吗？",
+                                QMessageBox::StandardButton::Ok | QMessageBox::StandardButton::Cancel,
+                                this,
+                                Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
+
+        if(message_box.exec() == QMessageBox::StandardButton::Cancel)
+        {
+            event->ignore();
+        }
+        else
+        {
+            save_data();
+        }
     }
 }
 
@@ -383,12 +405,25 @@ Alarm_Clock read_alarmClock(ifstream* loadFile)
 }
 void Clock_Main_Window::save_data()
 {
-    ofstream save_file("data");
+    ofstream save_file("Smallclock_Data");
 
     write_str(&save_file, m_const_string_Smallclock_version);
 
     write_str(&save_file, m_clock_setting_dialog->get_timer_command());
     write_str(&save_file, m_clock_setting_dialog->get_timer_message());
+
+    bool is_sendTips_when_window_will_be_close =
+            m_clock_setting_dialog->get_is_sendTips_when_window_will_be_close();
+    save_file.write((char*)(&is_sendTips_when_window_will_be_close),
+                    sizeof(is_sendTips_when_window_will_be_close));
+    bool is_hide_when_mainWindow_clockButton_click =
+            m_clock_setting_dialog->get_is_hide_when_mainWindow_clockButton_click();
+    save_file.write((char*)(&is_hide_when_mainWindow_clockButton_click),
+                    sizeof(is_hide_when_mainWindow_clockButton_click));
+    bool is_hide_when_app_start =
+            m_clock_setting_dialog->get_is_hide_when_app_start();
+    save_file.write((char*)(&is_hide_when_app_start),
+                    sizeof(is_hide_when_app_start));
 
     save_alarmClock(&save_file, m_clock_setting_dialog->get_alarm_default_setting());
 
@@ -415,13 +450,28 @@ void Clock_Main_Window::save_data()
 }
 void Clock_Main_Window::read_data()
 {
-    ifstream load_file("data");
+    ifstream load_file("Smallclock_Data");
 
     string smallclock_version = read_str(&load_file);
     if(smallclock_version == m_const_string_Smallclock_version)
     {
         m_clock_setting_dialog->set_timer_command(read_str(&load_file));
         m_clock_setting_dialog->set_timer_message(read_str(&load_file));
+
+        bool is_sendTips_when_window_will_be_close = 0;
+        bool is_hide_when_mainWindow_clockButton_click = 0;
+        bool is_hide_when_app_start = 0;
+        load_file.read((char*)(&is_sendTips_when_window_will_be_close),
+                       sizeof(is_sendTips_when_window_will_be_close));
+        load_file.read((char*)(&is_hide_when_mainWindow_clockButton_click),
+                       sizeof(is_hide_when_mainWindow_clockButton_click));
+        load_file.read((char*)(&is_hide_when_app_start),
+                       sizeof(is_hide_when_app_start));
+        m_clock_setting_dialog
+                ->set_is_sendTips_when_window_will_be_close(is_sendTips_when_window_will_be_close);
+        m_clock_setting_dialog
+                ->set_is_hide_when_mainWindow_clockButton_click(is_hide_when_mainWindow_clockButton_click);
+        m_clock_setting_dialog->set_is_hide_when_app_start(is_hide_when_app_start);
 
         m_clock_setting_dialog->set_alarm_default_setting(read_alarmClock(&load_file));
 

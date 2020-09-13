@@ -47,11 +47,46 @@ void Clock_Setting_Dialog::set_alarm_default_setting(Alarm_Clock alarm_clock_def
     show_data();
 }
 
+bool Clock_Setting_Dialog::get_is_hide_when_mainWindow_clockButton_click()
+{
+    return m_is_hide_when_mainWindow_clockButton_click;
+}
+bool Clock_Setting_Dialog::get_is_sendTips_when_window_will_be_close()
+{
+    return m_is_sendTips_when_window_will_be_close;
+}
+bool Clock_Setting_Dialog::get_is_hide_when_app_start()
+{
+    return m_is_hide_when_app_start;
+}
+
+void Clock_Setting_Dialog::set_is_hide_when_mainWindow_clockButton_click(bool is_hide_when_mainWindow_clockButton_click)
+{
+    m_is_hide_when_mainWindow_clockButton_click = is_hide_when_mainWindow_clockButton_click;
+    show_data();
+}
+void Clock_Setting_Dialog::set_is_sendTips_when_window_will_be_close(bool is_sendTips_when_window_will_be_close)
+{
+    m_is_sendTips_when_window_will_be_close = is_sendTips_when_window_will_be_close;
+    show_data();
+}
+void Clock_Setting_Dialog::set_is_hide_when_app_start(bool is_hide_when_app_start)
+{
+    m_is_hide_when_app_start = is_hide_when_app_start;
+    show_data();
+}
+
 void Clock_Setting_Dialog::save_data()
 {
     m_string_timer_command = ui->textEdit_timer_command->toPlainText().toStdString();
     m_string_timer_message = ui->textEdit_timer_message->toPlainText().toStdString();
     m_alarm_clock_setting = temp_alarm_clock_seting;
+    m_is_sendTips_when_window_will_be_close =
+            ui->checkBox_is_sendTips_when_window_will_be_close->isChecked();
+    m_is_hide_when_mainWindow_clockButton_click =
+            ui->checkBox_is_hide_when_mainWindow_clockButton_click->isChecked();
+    m_is_hide_when_app_start =
+            ui->checkBox_is_hide_when_app_start->isChecked();
 }
 void Clock_Setting_Dialog::show_data()
 {
@@ -59,6 +94,13 @@ void Clock_Setting_Dialog::show_data()
     ui->textEdit_timer_message->setText(QString(m_string_timer_message.c_str()));
     show_alarm_setting(m_alarm_clock_setting);
     temp_alarm_clock_seting = m_alarm_clock_setting;
+
+    ui->checkBox_is_sendTips_when_window_will_be_close
+            ->setChecked(m_is_sendTips_when_window_will_be_close);
+    ui->checkBox_is_hide_when_mainWindow_clockButton_click
+            ->setChecked(m_is_hide_when_mainWindow_clockButton_click);
+    ui->checkBox_is_hide_when_app_start
+            ->setChecked(m_is_hide_when_app_start);
 }
 
 void Clock_Setting_Dialog::show_alarm_setting(Alarm_Clock setting)
