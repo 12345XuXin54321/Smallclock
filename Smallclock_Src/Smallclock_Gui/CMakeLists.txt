@@ -30,15 +30,11 @@ FILE(GLOB INCLUDE_FILES "./*.h")
 FILE(GLOB SRC_FILES "./*.cpp" "./*.c")
 FILE(GLOB UI_FILES "./*.ui")
 
-FILE(GLOB_RECURSE QRC_SOURCE_FILES "./icons/*.qrc")
-qt5_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
-
 add_library(Smallclock_Gui STATIC
   ${INCLUDE_FILES}
   ${SRC_FILES}
   ${UI_FILES}
-  ${QRC_FILES}
 )
 
-target_link_libraries(Smallclock_Gui PRIVATE Qt5::Widgets)
+target_link_libraries(Smallclock_Gui PUBLIC Qt5::Widgets)
 target_link_libraries(Smallclock_Gui PUBLIC notify)

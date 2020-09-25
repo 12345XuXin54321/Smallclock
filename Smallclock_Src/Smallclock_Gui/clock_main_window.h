@@ -127,7 +127,7 @@ private slots:
 
     void do_when_alarmClock_to_be_stop_remind();
     void do_when_alarmClock_to_be_start_or_stop();
-    void on_treeWidgetItem_rightKey_menu_clicked(const QPoint& point);
+    void alarmClockTreeWidgetItem_rightKey_menu_clicked(const QPoint& point);
 
     void on_pushButton_stopwatch_start_stop_clicked();
 
@@ -141,12 +141,12 @@ private slots:
 
     void on_action_set_triggered();
 
-    void on_Button_alarmClock_add_new_clicked();
-    void on_Button_alarmClock_edit_clicked();
-    void on_Button_alarmClock_delete_clicked();
+    void pushButton_alarmClock_add_new_clicked();
+    void pushButton_alarmClock_edit_clicked();
+    void pushButton_alarmClock_delete_clicked();
 
-    void on_systemTrayMenu_Button_show_or_hide_clicked();
-    void on_systemTrayMenu_Button_exit_clicked();
+    void systemTrayMenu_Button_show_or_hide_clicked();
+    void systemTrayMenu_Button_exit_clicked();
 
 private:
     Ui::Clock_Main_Window *ui;

@@ -21,7 +21,6 @@
 #include "../../Smallclock_version.h"
 
 using namespace std;
-using namespace this_thread;
 
 //usec
 __int128 m_int128_stopwatch_time_use = 0;
@@ -79,19 +78,19 @@ Clock_Main_Window::Clock_Main_Window(QWidget *parent)
             connect(ui->treeWidget_alarm_clock,
                     SIGNAL(customContextMenuRequested(const QPoint&)),
                     this,
-                    SLOT(on_treeWidgetItem_rightKey_menu_clicked(const QPoint&)));
+                    SLOT(alarmClockTreeWidgetItem_rightKey_menu_clicked(const QPoint&)));
     
     m_menu_systemTray = new QMenu(this);
 
     m_action_menu_systemTray_show_hide = new QAction(m_menu_systemTray);
     m_action_menu_systemTray_show_hide->setText("隐藏");
     connect(m_action_menu_systemTray_show_hide, SIGNAL(triggered()), this,
-            SLOT(on_systemTrayMenu_Button_show_or_hide_clicked()));
+            SLOT(systemTrayMenu_Button_show_or_hide_clicked()));
 
     m_action_menu_systemTray_exit = new QAction(m_menu_systemTray);
     m_action_menu_systemTray_exit->setText("退出");
     connect(m_action_menu_systemTray_exit, SIGNAL(triggered()), this,
-            SLOT(on_systemTrayMenu_Button_exit_clicked()));
+            SLOT(systemTrayMenu_Button_exit_clicked()));
 
     m_menu_systemTray->addAction(m_action_menu_systemTray_show_hide);
     m_menu_systemTray->addAction(m_action_menu_systemTray_exit);
@@ -276,7 +275,10 @@ void Clock_Main_Window::mainWindow_hide()
 
 void Clock_Main_Window::closeEvent(QCloseEvent *event)
 {
-    if(event->spontaneous() == true) //事件来自底层窗口系统
+    //保存数据
+    save_data();
+
+    if(event->spontaneous() == true) //事件来自底层窗口系统（直接按窗口关闭按钮）
     {
         if(m_clock_setting_dialog->get_is_hide_when_mainWindow_clockButton_click() == true)
         {
@@ -299,10 +301,6 @@ void Clock_Main_Window::closeEvent(QCloseEvent *event)
         if(message_box.exec() == QMessageBox::StandardButton::Cancel)
         {
             event->ignore();
-        }
-        else
-        {
-            save_data();
         }
     }
 }
@@ -345,7 +343,6 @@ void write_str(ofstream* saveFile, string str)
 {
     char char_zero = 0;
     saveFile->write((char*)(str.c_str()), sizeof(char) * str.size());
-    cout << sizeof(char_zero) << endl;
     saveFile->write(&char_zero, sizeof(char_zero));
 }
 void save_alarmClock(ofstream* saveFile, Alarm_Clock alarm_clock)
@@ -405,7 +402,7 @@ Alarm_Clock read_alarmClock(ifstream* loadFile)
 }
 void Clock_Main_Window::save_data()
 {
-    ofstream save_file("Smallclock_Data");
+    ofstream save_file(".Smallclock_Data");
 
     write_str(&save_file, m_const_string_Smallclock_version);
 
@@ -450,7 +447,7 @@ void Clock_Main_Window::save_data()
 }
 void Clock_Main_Window::read_data()
 {
-    ifstream load_file("Smallclock_Data");
+    ifstream load_file(".Smallclock_Data");
 
     string smallclock_version = read_str(&load_file);
     if(smallclock_version == m_const_string_Smallclock_version)
@@ -608,13 +605,13 @@ void Clock_Main_Window::do_when_alarm_clock_timer_timeout()
     }
 }
 
-void Clock_Main_Window::on_treeWidgetItem_rightKey_menu_clicked(const QPoint& point)
+void Clock_Main_Window::alarmClockTreeWidgetItem_rightKey_menu_clicked(const QPoint& point)
 {
     m_alarm_clock_item_last_clicked = (alarmClock_set*)(ui->treeWidget_alarm_clock->itemAt(point));
     QMenu* menu_treeWidget = new QMenu();
     if(m_alarm_clock_item_last_clicked == 0)
     {
-        menu_treeWidget->addAction("新建闹钟", this, SLOT(on_Button_alarmClock_add_new_clicked()));
+        menu_treeWidget->addAction("新建闹钟", this, SLOT(pushButton_alarmClock_add_new_clicked()));
     }
     else
     {
@@ -634,8 +631,8 @@ void Clock_Main_Window::on_treeWidgetItem_rightKey_menu_clicked(const QPoint& po
             menu_treeWidget->addAction("开启", this, SLOT(do_when_alarmClock_to_be_start_or_stop()));
         }
         menu_treeWidget->addSeparator();
-        menu_treeWidget->addAction("编辑闹钟", this, SLOT(on_Button_alarmClock_edit_clicked()));
-        menu_treeWidget->addAction("删除闹钟", this, SLOT(on_Button_alarmClock_delete_clicked()));
+        menu_treeWidget->addAction("编辑闹钟", this, SLOT(pushButton_alarmClock_edit_clicked()));
+        menu_treeWidget->addAction("删除闹钟", this, SLOT(pushButton_alarmClock_delete_clicked()));
     }
     menu_treeWidget->exec(QCursor::pos());
 }
@@ -745,7 +742,7 @@ void Clock_Main_Window::on_action_set_triggered()
     m_clock_setting_dialog->exec();
 }
 
-void Clock_Main_Window::on_Button_alarmClock_add_new_clicked()
+void Clock_Main_Window::pushButton_alarmClock_add_new_clicked()
 {
     New_Alarm_Clock_Dialog *new_alarm_clock_dialog = new New_Alarm_Clock_Dialog();
     new_alarm_clock_dialog->set_alarm_clock(m_clock_setting_dialog->get_alarm_default_setting());
@@ -754,7 +751,7 @@ void Clock_Main_Window::on_Button_alarmClock_add_new_clicked()
         alarmClock_add(new_alarm_clock_dialog->get_alarm_clock_setting());
     }
 }
-void Clock_Main_Window::on_Button_alarmClock_edit_clicked()
+void Clock_Main_Window::pushButton_alarmClock_edit_clicked()
 {
     New_Alarm_Clock_Dialog *new_alarm_clock_dialog = new New_Alarm_Clock_Dialog();
     new_alarm_clock_dialog->set_alarm_clock(m_alarm_clock_item_last_clicked->get_alarmClock());
@@ -764,13 +761,13 @@ void Clock_Main_Window::on_Button_alarmClock_edit_clicked()
                         m_alarm_clock_item_last_clicked);
     }
 }
-void Clock_Main_Window::on_Button_alarmClock_delete_clicked()
+void Clock_Main_Window::pushButton_alarmClock_delete_clicked()
 {
     m_alarm_clock_item_last_clicked->stop_remind();
     alarmClock_delete(m_alarm_clock_item_last_clicked);
 }
 
-void Clock_Main_Window::on_systemTrayMenu_Button_show_or_hide_clicked()
+void Clock_Main_Window::systemTrayMenu_Button_show_or_hide_clicked()
 {
     if(m_is_mainWindow_show == true)
     {
@@ -781,7 +778,7 @@ void Clock_Main_Window::on_systemTrayMenu_Button_show_or_hide_clicked()
         mainWindow_show();
     }
 }
-void Clock_Main_Window::on_systemTrayMenu_Button_exit_clicked()
+void Clock_Main_Window::systemTrayMenu_Button_exit_clicked()
 {
     QMainWindow::close();
 }
