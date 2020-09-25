@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>program_icons/SmallClock.png</file>
+        <file>program_icons/SmallClock_SystemTray.png</file>
+    </qresource>
+</RCC>
