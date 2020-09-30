@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>设置</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../Smallclock_App/resources/program_icons.qrc">
+    <normaloff>:/program_icons/SmallClock_SystemTray.png</normaloff>:/program_icons/SmallClock_SystemTray.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
@@ -32,7 +36,7 @@
       <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_common_setting">
       <attribute name="title">
@@ -184,6 +188,9 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="1" column="1" rowspan="6">
         <widget class="QTextEdit" name="textEdit_alarm_clock_default_message">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -194,6 +201,9 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="1" column="2" rowspan="6">
         <widget class="QTextEdit" name="textEdit_alarm_clock_default_command">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -240,6 +250,9 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="5" column="0">
         <widget class="QTextEdit" name="textEdit_alarm_clock_default_choose_range">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -271,7 +284,9 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../Smallclock_App/resources/program_icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

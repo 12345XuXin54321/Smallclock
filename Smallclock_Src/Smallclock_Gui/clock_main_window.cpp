@@ -14,6 +14,7 @@
 #include <QTreeWidgetItemIterator>
 
 #include "clocktimer_choose_time_dialog.h"
+#include "clock_about_dialog.h"
 
 #include "clock_main_window.h"
 #include "./ui_clock_main_window.h"
@@ -62,24 +63,24 @@ Clock_Main_Window::Clock_Main_Window(QWidget *parent)
     ui->setupUi(this);
 
     setWindowIcon(QIcon(":/program_icons/SmallClock.png"));
-    
+
     m_timer_flush = new QTimer(this);
     connect(m_timer_flush, SIGNAL(timeout()), this, SLOT(do_when_flush_timer_timeout()));
-    
+
     m_timer_alarm_clock = new QTimer(this);
     connect(m_timer_alarm_clock, SIGNAL(timeout()), this, SLOT(do_when_alarm_clock_timer_timeout()));
     m_timer_alarm_clock->start(800);
-    
+
     m_clock_setting_dialog = new Clock_Setting_Dialog();
     m_clock_setting_dialog->hide();
-    
+
     ui->treeWidget_alarm_clock->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
     ui->treeWidget_alarm_clock->
             connect(ui->treeWidget_alarm_clock,
                     SIGNAL(customContextMenuRequested(const QPoint&)),
                     this,
                     SLOT(alarmClockTreeWidgetItem_rightKey_menu_clicked(const QPoint&)));
-    
+
     m_menu_systemTray = new QMenu(this);
 
     m_action_menu_systemTray_show_hide = new QAction(m_menu_systemTray);
@@ -207,12 +208,19 @@ void Clock_Main_Window::do_when_clock_timer_end()
                                            m_clock_setting_dialog->get_timer_message().c_str(),
                                            NULL);
 
-    m_command_thread_clocktimer = new Command_Do_In_Thread<Clock_Main_Window>
-            (m_clock_setting_dialog->get_timer_command(),
-             this,
-             &Clock_Main_Window::do_when_clocktimer_thread_exit,
-             &Clock_Main_Window::do_when_clock_timer_stop_remind);
-    
+
+    if(m_clock_setting_dialog->get_timer_command().size() > 0)
+    {
+        m_command_thread_clocktimer = new Command_Do_In_Thread<Clock_Main_Window>
+                (m_clock_setting_dialog->get_timer_command(),
+                 this,
+                 &Clock_Main_Window::do_when_clocktimer_thread_exit,
+                 &Clock_Main_Window::do_when_clock_timer_stop_remind);
+    }
+    else
+    {
+        m_command_thread_clocktimer = 0;
+    }
     cout << "ding----" << endl;
 }
 void Clock_Main_Window::do_when_clock_timer_stop_remind()
@@ -220,7 +228,7 @@ void Clock_Main_Window::do_when_clock_timer_stop_remind()
     m_is_clocktimer_reminding = false;
     cout << "turn off" << endl;
     ui->clock_number_display_form_timer->stop_flickered_remind();
-    
+
 }
 void Clock_Main_Window::do_when_clocktimer_thread_exit()
 {
@@ -654,7 +662,7 @@ void Clock_Main_Window::on_pushButton_stopwatch_start_stop_clicked()
     if(m_is_stopwatch_start == false)
     {
         m_int128_stopwatch_begin_time = get_tv_time_now();
-        
+
         ui->clock_number_display_form_stopwatch
                 ->set_time(m_int128_stopwatch_time_use + (get_tv_time_now() - m_int128_stopwatch_begin_time));
         stopwatch_start();
@@ -662,12 +670,12 @@ void Clock_Main_Window::on_pushButton_stopwatch_start_stop_clicked()
     else
     {
         stopwatch_stop();
-        
+
         long end_time = get_tv_time_now();
-        
+
         ui->clock_number_display_form_stopwatch
                 ->set_time(m_int128_stopwatch_time_use + (end_time - m_int128_stopwatch_begin_time));
-        
+
         m_int128_stopwatch_time_use += (end_time - m_int128_stopwatch_begin_time);
         m_int128_stopwatch_begin_time = 0;
     }
@@ -701,10 +709,10 @@ void Clock_Main_Window::on_pushButton_timer_start_stop_clicked()
     {
         m_int128_timer_begin_time = get_tv_time_now();
         m_int128_timer_time_use += (get_tv_time_now() - m_int128_timer_begin_time);
-        
+
         ui->clock_number_display_form_timer
                 ->set_time(m_int128_timer_duration - m_int128_timer_time_use);
-        
+
         clocktimer_start();
     }
     else
@@ -712,16 +720,19 @@ void Clock_Main_Window::on_pushButton_timer_start_stop_clicked()
         if(m_is_clocktimer_end == false)
         {
             clocktimer_stop();
-            
+
             m_int128_timer_time_use += (get_tv_time_now() - m_int128_timer_begin_time);
             ui->clock_number_display_form_timer
                     ->set_time(m_int128_timer_duration - m_int128_timer_time_use);
-            
+
             m_int128_timer_begin_time = 0;
         }
         else
         {
-            m_command_thread_clocktimer->end_the_command();
+            if(m_command_thread_clocktimer != 0)
+            {
+                m_command_thread_clocktimer->end_the_command();
+            }
             ui->clock_number_display_form_timer->stop_flickered_remind();
             clocktimer_initialization();
         }
@@ -730,6 +741,10 @@ void Clock_Main_Window::on_pushButton_timer_start_stop_clicked()
 
 void Clock_Main_Window::on_pushButton_timer_reset_clicked()
 {
+    if(m_command_thread_clocktimer != 0)
+    {
+        m_command_thread_clocktimer->end_the_command();
+    }
     if(m_is_clocktimer_reminding == true)
     {
         do_when_clock_timer_stop_remind();
@@ -781,4 +796,10 @@ void Clock_Main_Window::systemTrayMenu_Button_show_or_hide_clicked()
 void Clock_Main_Window::systemTrayMenu_Button_exit_clicked()
 {
     QMainWindow::close();
+}
+
+void Clock_Main_Window::on_action_aboutSmallclock_triggered()
+{
+    Clock_About_Dialog about_dialog(this);
+    about_dialog.exec();
 }

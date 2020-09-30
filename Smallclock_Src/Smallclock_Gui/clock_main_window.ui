@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>Smail Clock</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../Smallclock_App/resources/program_icons.qrc">
+    <normaloff>:/program_icons/SmallClock_SystemTray.png</normaloff>:/program_icons/SmallClock_SystemTray.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
@@ -244,18 +248,30 @@
      <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="menu_mainMenu">
     <property name="title">
      <string>菜单</string>
     </property>
     <addaction name="action_set"/>
    </widget>
-   <addaction name="menu"/>
+   <widget class="QMenu" name="menu_about">
+    <property name="title">
+     <string>关于</string>
+    </property>
+    <addaction name="action_aboutSmallclock"/>
+   </widget>
+   <addaction name="menu_mainMenu"/>
+   <addaction name="menu_about"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_set">
    <property name="text">
     <string>首选项</string>
+   </property>
+  </action>
+  <action name="action_aboutSmallclock">
+   <property name="text">
+    <string>关于Smallclock</string>
    </property>
   </action>
  </widget>
@@ -266,6 +282,8 @@
    <header>clock_number_display_form.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../Smallclock_App/resources/program_icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

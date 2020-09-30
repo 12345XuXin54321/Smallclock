@@ -113,17 +113,17 @@ private:
 
     void run_function_do_when_thread_exit()
     {
-        if(m_function_do_when_thread_be_ended != 0)
+        if(m_function_do_when_thread_exit != 0)
         {
-            (m_classtype_class->*m_function_do_when_thread_be_ended)();
+            (m_classtype_class->*m_function_do_when_thread_exit)();
         }
         clean_the_data_in_class();
     }
     void run_function_do_when_thread_be_ended()
     {
-        if(m_function_do_when_thread_exit != 0)
+        if(m_function_do_when_thread_be_ended != 0)
         {
-            (m_classtype_class->*m_function_do_when_thread_exit)();
+            (m_classtype_class->*m_function_do_when_thread_be_ended)();
         }
         clean_the_data_in_class();
     }

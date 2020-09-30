@@ -148,6 +148,8 @@ private slots:
     void systemTrayMenu_Button_show_or_hide_clicked();
     void systemTrayMenu_Button_exit_clicked();
 
+    void on_action_aboutSmallclock_triggered();
+
 private:
     Ui::Clock_Main_Window *ui;
 

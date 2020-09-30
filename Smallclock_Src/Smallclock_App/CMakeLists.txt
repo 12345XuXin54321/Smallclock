@@ -1,7 +1,7 @@
 FILE(GLOB INCLUDE_FILES "./*.h")
 FILE(GLOB SRC_FILES "./*.cpp" "./*.c")
 
-FILE(GLOB_RECURSE QRC_SOURCE_FILES "./icons/*.qrc")
+FILE(GLOB_RECURSE QRC_SOURCE_FILES "./resources/*.qrc")
 qt5_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
 
 add_executable(Smallclock

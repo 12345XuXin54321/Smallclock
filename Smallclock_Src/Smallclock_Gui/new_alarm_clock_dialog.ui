@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>编辑闹钟</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../Smallclock_App/resources/program_icons.qrc">
+    <normaloff>:/program_icons/SmallClock_SystemTray.png</normaloff>:/program_icons/SmallClock_SystemTray.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout_5">
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox_alarm_clock_message_set">
@@ -230,7 +234,9 @@
    <header>clock_choose_alarm_clock_time_form.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../Smallclock_App/resources/program_icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

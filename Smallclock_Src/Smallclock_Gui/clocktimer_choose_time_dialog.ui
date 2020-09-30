@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>选择时间</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../Smallclock_App/resources/program_icons.qrc">
+    <normaloff>:/program_icons/SmallClock_SystemTray.png</normaloff>:/program_icons/SmallClock_SystemTray.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="topMargin">
     <number>30</number>
@@ -140,7 +144,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../Smallclock_App/resources/program_icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
