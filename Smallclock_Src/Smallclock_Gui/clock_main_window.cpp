@@ -532,7 +532,8 @@ bool Clock_Main_Window::compare_alarm_clock_month_and_now(Alarm_Clock alarm_cloc
 bool Clock_Main_Window::compare_alarm_clock_dateTime_and_now(Alarm_Clock alarm_clock)
 {
     QDateTime now_date_time = QDateTime::currentDateTime();
-    QDateTime alarm_clock_date_time = QDateTime::fromTime_t(alarm_clock.m_longlongint_accurate_time);
+    QDateTime alarm_clock_date_time = QDateTime::fromSecsSinceEpoch(alarm_clock.m_longlongint_accurate_time);
+    //QDateTime alarm_clock_date_time = QDateTime::fromTime_t(alarm_clock.m_longlongint_accurate_time);
     if(now_date_time.date().year() == alarm_clock_date_time.date().year() &&
             now_date_time.date().dayOfYear() == alarm_clock_date_time.date().dayOfYear() &&
             now_date_time.time().hour() == alarm_clock_date_time.time().hour() &&

@@ -21,10 +21,12 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 find_package(PkgConfig REQUIRED)
 
-# libnotify start
-pkg_check_modules(LIB_NOTIFY_PKG libnotify)
-include_directories(${LIB_NOTIFY_PKG_INCLUDE_DIRS})
-# libnotify end
+# libgtk start
+pkg_check_modules(LIB_GTK gtk+-3.0)
+include_directories(${LIB_GTK_INCLUDE_DIRS})
+# libgtk end
+
+add_subdirectory(notify)
 
 FILE(GLOB INCLUDE_FILES "./*.h")
 FILE(GLOB SRC_FILES "./*.cpp" "./*.c")
@@ -36,5 +38,5 @@ add_library(Smallclock_Gui STATIC
   ${UI_FILES}
 )
 
-target_link_libraries(Smallclock_Gui PUBLIC Qt5::Widgets)
+target_link_libraries(Smallclock_Gui PUBLIC Qt6::Widgets)
 target_link_libraries(Smallclock_Gui PUBLIC notify)

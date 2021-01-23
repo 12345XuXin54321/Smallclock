@@ -1,0 +1,33 @@
+#ifndef IMPORT_STATIC_QT_PLUGINS_H
+#define IMPORT_STATIC_QT_PLUGINS_H
+
+#include <QtPlugin>
+
+Q_IMPORT_PLUGIN(QXcbGlxIntegrationPlugin)
+Q_IMPORT_PLUGIN(QXcbEglIntegrationPlugin)
+Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
+Q_IMPORT_PLUGIN(QXdgDesktopPortalThemePlugin)
+
+Q_IMPORT_PLUGIN(QEglFSIntegrationPlugin)
+Q_IMPORT_PLUGIN(QEglFSKmsEglDeviceIntegrationPlugin)
+Q_IMPORT_PLUGIN(QEglFSX11IntegrationPlugin)
+Q_IMPORT_PLUGIN(QEglFSEmulatorIntegrationPlugin)
+
+Q_IMPORT_PLUGIN(QMinimalEglIntegrationPlugin)
+Q_IMPORT_PLUGIN(QMinimalIntegrationPlugin)
+
+Q_IMPORT_PLUGIN(QComposePlatformInputContextPlugin)
+Q_IMPORT_PLUGIN(QGifPlugin)
+Q_IMPORT_PLUGIN(QIbusPlatformInputContextPlugin)
+Q_IMPORT_PLUGIN(QICNSPlugin)
+Q_IMPORT_PLUGIN(QICOPlugin)
+Q_IMPORT_PLUGIN(QJpegPlugin)
+Q_IMPORT_PLUGIN(QLibInputPlugin)
+Q_IMPORT_PLUGIN(QLinuxFbIntegrationPlugin)
+Q_IMPORT_PLUGIN(QOffscreenIntegrationPlugin)
+Q_IMPORT_PLUGIN(QTgaPlugin)
+Q_IMPORT_PLUGIN(QTiffPlugin)
+Q_IMPORT_PLUGIN(QWebpPlugin)
+Q_IMPORT_PLUGIN(QWbmpPlugin)
+
+#endif //IMPORT_STATIC_QT_PLUGINS_H
