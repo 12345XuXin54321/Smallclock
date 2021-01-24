@@ -161,7 +161,8 @@ void New_Alarm_Clock_Dialog::set_alarm_clock(Alarm_Clock setting_data)
     set_range_choose(setting_data);
 
     ui->lineEdit_alarm_clock_name->setText(QString(setting_data.m_str_alarm_clock_name.c_str()));
-    ui->textEdit_alarm_clock_command->setText(QString(setting_data.m_str_command.c_str()));
+    ui->lineEdit_alarm_clock_command_path->setText(QString(setting_data.m_str_command.c_str()));
+    ui->lineEdit_alarm_clock_music_path->setText(QString(setting_data.m_str_music.c_str()));
     ui->textEdit_alarm_clock_message->setText(QString(setting_data.m_str_message.c_str()));
 }
 Alarm_Clock New_Alarm_Clock_Dialog::get_alarm_clock_setting()
@@ -178,7 +179,8 @@ Alarm_Clock New_Alarm_Clock_Dialog::get_alarm_clock_setting()
     get_range_choose(&m_alarm_clock_setting);
 
     m_alarm_clock_setting.m_str_alarm_clock_name = ui->lineEdit_alarm_clock_name->text().toStdString();
-    m_alarm_clock_setting.m_str_command = ui->textEdit_alarm_clock_command->toPlainText().toStdString();
+    m_alarm_clock_setting.m_str_command = ui->lineEdit_alarm_clock_command_path->text().toStdString();
+    m_alarm_clock_setting.m_str_music = ui->lineEdit_alarm_clock_music_path->text().toStdString();
     m_alarm_clock_setting.m_str_message = ui->textEdit_alarm_clock_message->toPlainText().toStdString();
 
     return m_alarm_clock_setting;
@@ -213,4 +215,16 @@ void New_Alarm_Clock_Dialog::on_radioButton_no_range_clicked()
     ui->alarm_clock_choose_time_form->setEnabled(false);
     ui->frame_choose_week_days->setEnabled(false);
     ui->dateTimeEdit_no_range->setEnabled(true);
+}
+
+void New_Alarm_Clock_Dialog::on_pushButton_alarm_clock_choose_command_clicked()
+{
+    QString command_path = QFileDialog::getOpenFileName(this);
+    ui->lineEdit_alarm_clock_command_path->setText(command_path);
+}
+
+void New_Alarm_Clock_Dialog::on_pushButton_alarm_clock_choose_music_clicked()
+{
+    QString music_path = QFileDialog::getOpenFileName(this);
+    ui->lineEdit_alarm_clock_music_path->setText(music_path);
 }

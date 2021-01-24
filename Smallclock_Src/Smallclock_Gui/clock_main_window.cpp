@@ -19,7 +19,7 @@
 #include "clock_main_window.h"
 #include "./ui_clock_main_window.h"
 
-#include "../../Smallclock_version.h"
+#include "../../config.h"
 
 using namespace std;
 
@@ -45,16 +45,16 @@ const int m_const_int_flush_time = 53;
 
 const string m_const_string_Smallclock_version =
         "<Smallclock_version=" +
-        to_string(Smallcllock_version_major) +
+        to_string(VERSION_MAJOR) +
         "." +
-        to_string(Smallcllock_version_minor) +
+        to_string(VERSION_MINOR) +
         "." +
-        to_string(Smallcllock_version_revision) +
+        to_string(VERSION_REVISION) +
         ">";
 
 struct timeval tv_temp;
 
-Command_Do_In_Thread<Clock_Main_Window> *m_command_thread_clocktimer = 0;
+//Command_Do_In_Thread<Clock_Main_Window> *m_command_thread_clocktimer = 0;
 
 Clock_Main_Window::Clock_Main_Window(QWidget *parent)
     : QMainWindow(parent)
@@ -203,23 +203,22 @@ void Clock_Main_Window::do_when_clock_timer_end()
 {
     m_is_clocktimer_reminding = true;
 
-    Message_Window_Show::showMessageWindow("Small Clock",
-                                           "计时器已到时",
-                                           m_clock_setting_dialog->get_timer_message().c_str(),
-                                           NULL);
+    Message_Window_Show::showMessageWindow("计时器已到时",
+                                           m_clock_setting_dialog->get_timer_message().c_str());
 
 
     if(m_clock_setting_dialog->get_timer_command().size() > 0)
     {
-        m_command_thread_clocktimer = new Command_Do_In_Thread<Clock_Main_Window>
+        /*m_command_thread_clocktimer = new Command_Do_In_Thread<Clock_Main_Window>
                 (m_clock_setting_dialog->get_timer_command(),
                  this,
                  &Clock_Main_Window::do_when_clocktimer_thread_exit,
-                 &Clock_Main_Window::do_when_clock_timer_stop_remind);
+                 &Clock_Main_Window::do_when_clock_timer_stop_remind);*/
+        system((m_clock_setting_dialog->get_timer_command() + " &").c_str());
     }
     else
     {
-        m_command_thread_clocktimer = 0;
+        //m_command_thread_clocktimer = 0;
     }
     cout << "ding----" << endl;
 }
@@ -242,7 +241,7 @@ void Clock_Main_Window::clocktimer_initialization()
     m_int128_timer_duration = 0;
     m_int128_timer_begin_time = 0;
     m_int128_timer_time_use = 0;
-    m_command_thread_clocktimer = 0;
+    //m_command_thread_clocktimer = 0;
     m_is_clocktimer_start = false;
     m_is_clocktimer_end = false;
     m_is_clocktimer_reminding = true;
@@ -357,6 +356,7 @@ void save_alarmClock(ofstream* saveFile, Alarm_Clock alarm_clock)
 {
     write_str(saveFile, alarm_clock.m_str_alarm_clock_name);
     write_str(saveFile, alarm_clock.m_str_message);
+    write_str(saveFile, alarm_clock.m_str_music);
     write_str(saveFile, alarm_clock.m_str_command);
 
     saveFile->write((char*)(&alarm_clock.m_timeType_choose_range),
@@ -384,6 +384,7 @@ Alarm_Clock read_alarmClock(ifstream* loadFile)
     Alarm_Clock alarm_clock;
     alarm_clock.m_str_alarm_clock_name = read_str(loadFile);
     alarm_clock.m_str_message = read_str(loadFile);
+    alarm_clock.m_str_music = read_str(loadFile);
     alarm_clock.m_str_command = read_str(loadFile);
 
     loadFile->read((char*)(&alarm_clock.m_timeType_choose_range),
@@ -415,6 +416,7 @@ void Clock_Main_Window::save_data()
     write_str(&save_file, m_const_string_Smallclock_version);
 
     write_str(&save_file, m_clock_setting_dialog->get_timer_command());
+    write_str(&save_file, m_clock_setting_dialog->get_timer_music());
     write_str(&save_file, m_clock_setting_dialog->get_timer_message());
 
     bool is_sendTips_when_window_will_be_close =
@@ -461,6 +463,7 @@ void Clock_Main_Window::read_data()
     if(smallclock_version == m_const_string_Smallclock_version)
     {
         m_clock_setting_dialog->set_timer_command(read_str(&load_file));
+        m_clock_setting_dialog->set_timer_music(read_str(&load_file));
         m_clock_setting_dialog->set_timer_message(read_str(&load_file));
 
         bool is_sendTips_when_window_will_be_close = 0;
@@ -730,10 +733,10 @@ void Clock_Main_Window::on_pushButton_timer_start_stop_clicked()
         }
         else
         {
-            if(m_command_thread_clocktimer != 0)
-            {
-                m_command_thread_clocktimer->end_the_command();
-            }
+//            if(m_command_thread_clocktimer != 0)
+//            {
+//                m_command_thread_clocktimer->end_the_command();
+//            }
             ui->clock_number_display_form_timer->stop_flickered_remind();
             clocktimer_initialization();
         }
@@ -742,10 +745,10 @@ void Clock_Main_Window::on_pushButton_timer_start_stop_clicked()
 
 void Clock_Main_Window::on_pushButton_timer_reset_clicked()
 {
-    if(m_command_thread_clocktimer != 0)
-    {
-        m_command_thread_clocktimer->end_the_command();
-    }
+//    if(m_command_thread_clocktimer != 0)
+//    {
+//        m_command_thread_clocktimer->end_the_command();
+//    }
     if(m_is_clocktimer_reminding == true)
     {
         do_when_clock_timer_stop_remind();

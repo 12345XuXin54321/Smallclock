@@ -17,26 +17,6 @@ Clock_Setting_Dialog::~Clock_Setting_Dialog()
     delete ui;
 }
 
-string Clock_Setting_Dialog::get_timer_command()
-{
-    return m_string_timer_command;
-}
-string Clock_Setting_Dialog::get_timer_message()
-{
-    return m_string_timer_message;
-}
-
-void Clock_Setting_Dialog::set_timer_command(string str_command)
-{
-    m_string_timer_command = str_command;
-    show_data();
-}
-void Clock_Setting_Dialog::set_timer_message(string str_message)
-{
-    m_string_timer_message = str_message;
-    show_data();
-}
-
 Alarm_Clock Clock_Setting_Dialog::get_alarm_default_setting()
 {
     return m_alarm_clock_setting;
@@ -78,7 +58,8 @@ void Clock_Setting_Dialog::set_is_hide_when_app_start(bool is_hide_when_app_star
 
 void Clock_Setting_Dialog::save_data()
 {
-    m_string_timer_command = ui->textEdit_timer_command->toPlainText().toStdString();
+    m_string_timer_command = ui->lineEdit_command_path->text().toStdString();
+    m_string_timer_music = ui->lineEdit_music_path->text().toStdString();
     m_string_timer_message = ui->textEdit_timer_message->toPlainText().toStdString();
     m_alarm_clock_setting = temp_alarm_clock_seting;
     m_is_sendTips_when_window_will_be_close =
@@ -90,7 +71,8 @@ void Clock_Setting_Dialog::save_data()
 }
 void Clock_Setting_Dialog::show_data()
 {
-    ui->textEdit_timer_command->setText(QString(m_string_timer_command.c_str()));
+    ui->lineEdit_command_path->setText(QString(m_string_timer_command.c_str()));
+    ui->lineEdit_music_path->setText(QString(m_string_timer_music.c_str()));
     ui->textEdit_timer_message->setText(QString(m_string_timer_message.c_str()));
     show_alarm_setting(m_alarm_clock_setting);
     temp_alarm_clock_seting = m_alarm_clock_setting;
@@ -109,8 +91,10 @@ void Clock_Setting_Dialog::show_alarm_setting(Alarm_Clock setting)
             setText(QString(setting.m_str_alarm_clock_name.c_str()));
     ui->lineEdit_alarm_clock_default_time->
             setText(QString(setting.get_str_time().c_str()));
-    ui->textEdit_alarm_clock_default_command->
+    ui->lineEdit_alarm_clock_default_command_path->
             setText(QString(setting.m_str_command.c_str()));
+    ui->lineEdit_alarm_clock_default_music_path->
+            setText(QString(setting.m_str_music.c_str()));
     ui->textEdit_alarm_clock_default_message->
             setText(QString(setting.m_str_message.c_str()));
     ui->textEdit_alarm_clock_default_choose_range->

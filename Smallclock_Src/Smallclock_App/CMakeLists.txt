@@ -17,4 +17,3 @@ target_link_libraries(Smallclock PUBLIC Smallclock_Base)
 target_link_libraries(Smallclock PUBLIC Smallclock_Gui)
 
 target_link_libraries(Smallclock PUBLIC Qt6::Widgets)
-#target_link_libraries(Smallclock PUBLIC ${QT_STATIC_PLUGINS_LIBS})

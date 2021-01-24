@@ -2,7 +2,7 @@
 
 #include <QFile>
 
-#include "../../Smallclock_version.h"
+#include "../../config.h"
 
 #include "clock_about_dialog.h"
 #include "ui_clock_about_dialog.h"
@@ -11,11 +11,13 @@ using namespace std;
 
 const string m_const_str_Smallclock_version =
         "Smallclock " +
-        to_string(Smallcllock_version_major) +
+        to_string(VERSION_MAJOR) +
         "." +
-        to_string(Smallcllock_version_minor) +
+        to_string(VERSION_MINOR) +
         "." +
-        to_string(Smallcllock_version_revision);
+        to_string(VERSION_REVISION) +
+        "-" +
+        to_string(BUILD_TIMES);
 
 Clock_About_Dialog::Clock_About_Dialog(QWidget *parent) :
     QDialog(parent),

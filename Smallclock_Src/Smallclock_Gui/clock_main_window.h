@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QCloseEvent>
 
+
 #include "../Smallclock_Base/Command_Do_In_Thread.h"
 #include "Message_Window_Show.h"
 
@@ -64,10 +65,11 @@ public:
                 m_alarm_clock.m_is_remind = true;
                 m_longlongint_secsSince1Jan1970UTC_last_remind =
                         QDateTime::currentDateTime().toSecsSinceEpoch();
-                m_thread_do_command
-                        = new Command_Do_In_Thread<alarmClock_set>(m_alarm_clock.m_str_command,
-                                                                   this,
-                                                                   &alarmClock_set::finish_remind);
+//                m_thread_do_command
+//                        = new Command_Do_In_Thread<alarmClock_set>(m_alarm_clock.m_str_command,
+//                                                                   this,
+//                                                                   &alarmClock_set::finish_remind);
+                system((m_alarm_clock.m_str_command + " &").c_str());
 
                 send_message();
                 show_alarmClock_date();
@@ -75,16 +77,16 @@ public:
         }
         void stop_remind()
         {
-            if(m_thread_do_command != 0)
+            /*if(m_thread_do_command != 0)
             {
                 m_thread_do_command->end_the_command();
-            }
+            }*/
 
             finish_remind();
         }
     private:
         Alarm_Clock m_alarm_clock;
-        Command_Do_In_Thread<alarmClock_set> *m_thread_do_command = 0;
+        //Command_Do_In_Thread<alarmClock_set> *m_thread_do_command = 0;
         long long int m_longlongint_secsSince1Jan1970UTC_last_remind = 0;
 
         void show_alarmClock_date()
@@ -106,17 +108,17 @@ public:
 
         void finish_remind()
         {
-            m_thread_do_command = 0;
+            //m_thread_do_command = 0;
             m_alarm_clock.m_is_remind = false;
             show_alarmClock_date();
         }
 
         void send_message()
         {
-            Message_Window_Show::showMessageWindow("Small Clock",
-                                                   "闹钟已到时",
-                                                   m_alarm_clock.m_str_message.c_str(),
-                                                   NULL);
+            Message_Window_Show::showMessageWindow(
+                        "闹钟已到时",
+                        m_alarm_clock.m_str_message.c_str()
+                        );
         }
     };
 

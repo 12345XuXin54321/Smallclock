@@ -9,16 +9,17 @@
 #include <libnotify/notify.h>
 
 #include "Message_Window_Show.h"
+#include "../../config.h"
 
 using namespace std;
 
-void Message_Window_Show::showMessageWindow(const char* app_name, const char* summary,
-                                            const char* message_body, const char* icon_path)
+void Message_Window_Show::showMessageWindow(const char* summary,
+                                            const char* message_body)
 {
-    notify_init(app_name);
+    notify_init(APP_NAME);
     NotifyNotification *notify = notify_notification_new(summary,
                                                          message_body,
-                                                         icon_path);
+                                                         ":/program_icons/SmallClock.png");
     notify_notification_show(notify, NULL);
 }
 

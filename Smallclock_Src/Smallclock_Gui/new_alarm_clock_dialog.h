@@ -6,6 +6,7 @@
 
 #include <QDialog>
 #include <QDateTime>
+#include <QFileDialog>
 
 #include "clock_choose_alarm_clock_time_form.h"
 
@@ -34,6 +35,7 @@ struct Alarm_Clock
 
     string m_str_alarm_clock_name = "新闹钟";
     string m_str_message;
+    string m_str_music;
     string m_str_command;
 
     Time_Type m_timeType_choose_range = Time_Type::range_a_day;
@@ -204,6 +206,10 @@ private slots:
     void on_radioButton_range_a_day_clicked();
 
     void on_radioButton_no_range_clicked();
+
+    void on_pushButton_alarm_clock_choose_command_clicked();
+
+    void on_pushButton_alarm_clock_choose_music_clicked();
 
 private:
     Ui::New_Alarm_Clock_Dialog *ui;

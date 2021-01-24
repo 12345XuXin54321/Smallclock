@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
-    <height>301</height>
+    <width>790</width>
+    <height>386</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,6 +36,33 @@
         </property>
        </widget>
       </item>
+      <item row="5" column="0">
+       <widget class="QLineEdit" name="lineEdit_alarm_clock_command_path"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_alarm_clock_command">
+        <property name="font">
+         <font>
+          <pointsize>15</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>运行外部脚本</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_alarm_clock_music">
+        <property name="font">
+         <font>
+          <pointsize>15</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>提示音乐</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0" colspan="2">
        <widget class="QLineEdit" name="lineEdit_alarm_clock_name"/>
       </item>
@@ -51,27 +78,25 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="label_alarm_clock_command">
-        <property name="font">
-         <font>
-          <pointsize>15</pointsize>
-         </font>
-        </property>
+      <item row="7" column="0">
+       <widget class="QLineEdit" name="lineEdit_alarm_clock_music_path"/>
+      </item>
+      <item row="5" column="1">
+       <widget class="QPushButton" name="pushButton_alarm_clock_choose_command">
         <property name="text">
-         <string>运行命令</string>
+         <string>选择</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="7" column="1">
+       <widget class="QPushButton" name="pushButton_alarm_clock_choose_music">
+        <property name="text">
+         <string>选择</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2">
        <widget class="QTextEdit" name="textEdit_alarm_clock_message">
-        <property name="lineWrapMode">
-         <enum>QTextEdit::NoWrap</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QTextEdit" name="textEdit_alarm_clock_command">
         <property name="lineWrapMode">
          <enum>QTextEdit::NoWrap</enum>
         </property>

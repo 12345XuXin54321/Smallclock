@@ -17,16 +17,14 @@ set(CMAKE_AUTORCC ON)
 #    endif()
 #endif()
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
 find_package(PkgConfig REQUIRED)
 
-# libgtk start
-pkg_check_modules(LIB_GTK gtk+-3.0)
-include_directories(${LIB_GTK_INCLUDE_DIRS})
-# libgtk end
-
-add_subdirectory(notify)
+# libnotify start
+pkg_check_modules(LIB_NOTIFY libnotify)
+include_directories(${LIB_NOTIFY_INCLUDE_DIRS})
+# libnotify end
 
 FILE(GLOB INCLUDE_FILES "./*.h")
 FILE(GLOB SRC_FILES "./*.cpp" "./*.c")

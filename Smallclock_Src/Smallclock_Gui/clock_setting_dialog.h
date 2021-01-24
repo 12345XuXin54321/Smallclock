@@ -23,11 +23,34 @@ public:
     ~Clock_Setting_Dialog();
 
     int exec();
-    string get_timer_command();
-    string get_timer_message();
+    string get_timer_command()
+    {
+        return m_string_timer_command;
+    }
+    string get_timer_music()
+    {
+        return m_string_timer_music;
+    }
+    string get_timer_message()
+    {
+        return m_string_timer_message;
+    }
 
-    void set_timer_command(string str_command);
-    void set_timer_message(string str_message);
+    void set_timer_command(string str_command)
+    {
+        m_string_timer_command = str_command;
+        show_data();
+    }
+    void set_timer_music(string str_music)
+    {
+        m_string_timer_music = str_music;
+        show_data();
+    }
+    void set_timer_message(string str_message)
+    {
+        m_string_timer_message = str_message;
+        show_data();
+    }
 
     Alarm_Clock get_alarm_default_setting();
     void set_alarm_default_setting(Alarm_Clock alarm_clock_default);
@@ -48,6 +71,7 @@ private:
     Ui::Clock_Setting_Dialog *ui;
 
     string m_string_timer_command;
+    string m_string_timer_music;
     string m_string_timer_message;
 
     Alarm_Clock m_alarm_clock_setting;
