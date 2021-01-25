@@ -7,7 +7,7 @@
 #include <QTimer>
 #include <QCloseEvent>
 
-
+#include <../Smallclock_Base/App_Data_Save.h>
 #include "../Smallclock_Base/Command_Do_In_Thread.h"
 #include "Message_Window_Show.h"
 
@@ -164,6 +164,8 @@ private:
     QMenu* m_menu_systemTray;
     QAction* m_action_menu_systemTray_show_hide;
     QAction* m_action_menu_systemTray_exit;
+
+    App_Data_Save m_save_data = App_Data_Save(".Smallclock_Data");
 
     __int128 get_tv_time_now();
 

@@ -11,13 +11,13 @@ using namespace std;
 
 const string m_const_str_Smallclock_version =
         "Smallclock " +
-        to_string(VERSION_MAJOR) +
+        to_string(APP_VERSION_MAJOR) +
         "." +
-        to_string(VERSION_MINOR) +
+        to_string(APP_VERSION_MINOR) +
         "." +
-        to_string(VERSION_REVISION) +
+        to_string(APP_VERSION_REVISION) +
         "-" +
-        to_string(BUILD_TIMES);
+        to_string(APP_BUILD_TIMES);
 
 Clock_About_Dialog::Clock_About_Dialog(QWidget *parent) :
     QDialog(parent),

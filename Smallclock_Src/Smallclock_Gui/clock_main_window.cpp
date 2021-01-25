@@ -45,12 +45,14 @@ const int m_const_int_flush_time = 53;
 
 const string m_const_string_Smallclock_version =
         "<Smallclock_version=" +
-        to_string(VERSION_MAJOR) +
+        to_string(APP_VERSION_MAJOR) +
         "." +
-        to_string(VERSION_MINOR) +
+        to_string(APP_VERSION_MINOR) +
         "." +
-        to_string(VERSION_REVISION) +
+        to_string(APP_VERSION_REVISION) +
         ">";
+
+auto a = QT_VERSION;
 
 struct timeval tv_temp;
 
@@ -312,127 +314,75 @@ void Clock_Main_Window::closeEvent(QCloseEvent *event)
     }
 }
 
-string read_str(ifstream* readFile)
+/*void save_alarmClock(App_Data_Save* write_data, Alarm_Clock alarm_clock)
 {
-#define CHAR_BUF_SIZE 16
-    string data;
-    char buf[CHAR_BUF_SIZE + 1];
-    memset(buf, 0, sizeof(buf));
-    int read_data = 0;
-    for(int i = 0; i < CHAR_BUF_SIZE; i++)
+    write_data->write_next_data(alarm_clock.m_str_alarm_clock_name);
+    write_data->write_next_data(alarm_clock.m_str_message);
+    write_data->write_next_data(alarm_clock.m_str_music);
+    write_data->write_next_data(alarm_clock.m_str_command);
+
+    write_data->write_next_data<Alarm_Clock::Time_Type>(alarm_clock.m_timeType_choose_range);
+    write_data->write_next_data<long long int>(alarm_clock.m_longlongint_accurate_time);
+    write_data->write_next_data<int>(alarm_clock.m_month);
+    write_data->write_next_data<int>(alarm_clock.m_day);
+    write_data->write_next_data<int>(alarm_clock.m_hour);
+    write_data->write_next_data<int>(alarm_clock.m_min);
+
+    write_data->write_next_data<bool>(alarm_clock.m_is_turn_on);
+
+    write_data->write_next_data<int>(alarm_clock.m_vector_alarm_time_range_a_week.size());
+    for(size_t i = 0; i < alarm_clock.m_vector_alarm_time_range_a_week.size(); i++)
     {
-        read_data = readFile->get();
-        if(read_data == 0 || read_data == -1)
-        {
-            string bufData(buf);
-            data += bufData;
-
-            break;
-        }
-        else
-        {
-            buf[i] = read_data;
-        }
-        if(i >= CHAR_BUF_SIZE - 1)
-        {
-            i = -1;
-            string bufData(buf);
-            data += bufData;
-
-            memset(buf, 0, sizeof(buf));
-        }
-    }
-    return data;
-
-#undef INT_BUF_SIZE
-}
-void write_str(ofstream* saveFile, string str)
-{
-    char char_zero = 0;
-    saveFile->write((char*)(str.c_str()), sizeof(char) * str.size());
-    saveFile->write(&char_zero, sizeof(char_zero));
-}
-void save_alarmClock(ofstream* saveFile, Alarm_Clock alarm_clock)
-{
-    write_str(saveFile, alarm_clock.m_str_alarm_clock_name);
-    write_str(saveFile, alarm_clock.m_str_message);
-    write_str(saveFile, alarm_clock.m_str_music);
-    write_str(saveFile, alarm_clock.m_str_command);
-
-    saveFile->write((char*)(&alarm_clock.m_timeType_choose_range),
-                    sizeof(alarm_clock.m_timeType_choose_range));
-
-    saveFile->write((char*)(&alarm_clock.m_longlongint_accurate_time),
-                    sizeof(alarm_clock.m_longlongint_accurate_time));
-    saveFile->write((char*)(&alarm_clock.m_month), sizeof(alarm_clock.m_month));
-    saveFile->write((char*)(&alarm_clock.m_day), sizeof(alarm_clock.m_day));
-    saveFile->write((char*)(&alarm_clock.m_hour), sizeof(alarm_clock.m_hour));
-    saveFile->write((char*)(&alarm_clock.m_min), sizeof(alarm_clock.m_min));
-
-    saveFile->write((char*)(&alarm_clock.m_is_turn_on), sizeof(alarm_clock.m_is_turn_on));
-
-    int day_in_week_length = alarm_clock.m_vector_alarm_time_range_a_week.size();
-    saveFile->write((char*)(&day_in_week_length), sizeof(day_in_week_length));
-    for(int i = 0; i < day_in_week_length; i++)
-    {
-        saveFile->write((char*)(&alarm_clock.m_vector_alarm_time_range_a_week[i]),
-                        sizeof(alarm_clock.m_vector_alarm_time_range_a_week[i]));
+        write_data->write_next_data<Alarm_Clock::Day_In_Week>(
+                    alarm_clock.m_vector_alarm_time_range_a_week[i]
+                    );
     }
 }
-Alarm_Clock read_alarmClock(ifstream* loadFile)
+Alarm_Clock read_alarmClock(App_Data_Save* read_data)
 {
     Alarm_Clock alarm_clock;
-    alarm_clock.m_str_alarm_clock_name = read_str(loadFile);
-    alarm_clock.m_str_message = read_str(loadFile);
-    alarm_clock.m_str_music = read_str(loadFile);
-    alarm_clock.m_str_command = read_str(loadFile);
+    alarm_clock.m_str_alarm_clock_name = read_data->read_next_data();
+    alarm_clock.m_str_message = read_data->read_next_data();
+    alarm_clock.m_str_music = read_data->read_next_data();
+    alarm_clock.m_str_command = read_data->read_next_data();
 
-    loadFile->read((char*)(&alarm_clock.m_timeType_choose_range),
-                   sizeof(alarm_clock.m_timeType_choose_range));
+    alarm_clock.m_timeType_choose_range = read_data->read_next_data<Alarm_Clock::Time_Type>();
 
-    loadFile->read((char*)(&alarm_clock.m_longlongint_accurate_time),
-                   sizeof(alarm_clock.m_longlongint_accurate_time));
-    loadFile->read((char*)(&alarm_clock.m_month), sizeof(alarm_clock.m_month));
-    loadFile->read((char*)(&alarm_clock.m_day), sizeof(alarm_clock.m_day));
-    loadFile->read((char*)(&alarm_clock.m_hour), sizeof(alarm_clock.m_hour));
-    loadFile->read((char*)(&alarm_clock.m_min), sizeof(alarm_clock.m_min));
+    alarm_clock.m_longlongint_accurate_time = read_data->read_next_data<long long int>();
+    alarm_clock.m_month = read_data->read_next_data<int>();
+    alarm_clock.m_day = read_data->read_next_data<int>();
+    alarm_clock.m_hour = read_data->read_next_data<int>();
+    alarm_clock.m_min = read_data->read_next_data<int>();
 
-    loadFile->read((char*)(&alarm_clock.m_is_turn_on), sizeof(alarm_clock.m_is_turn_on));
+    alarm_clock.m_is_turn_on = read_data->read_next_data<bool>();
 
-    int day_in_week_length = 0;
-    loadFile->read((char*)(&day_in_week_length), sizeof(day_in_week_length));
-    Alarm_Clock::Day_In_Week temp_read;
+    int day_in_week_length = read_data->read_next_data<int>();
     for(int i = 0; i < day_in_week_length; i++)
     {
-        loadFile->read((char*)(&temp_read), sizeof(temp_read));
-        alarm_clock.m_vector_alarm_time_range_a_week.push_back(temp_read);
+        alarm_clock.m_vector_alarm_time_range_a_week.push_back(
+                    read_data->read_next_data<Alarm_Clock::Day_In_Week>()
+                    );
     }
     return alarm_clock;
 }
+*/
+
 void Clock_Main_Window::save_data()
 {
-    ofstream save_file(".Smallclock_Data");
+    m_save_data.start_write();
 
-    write_str(&save_file, m_const_string_Smallclock_version);
+    m_save_data.write_next_data(m_const_string_Smallclock_version);
 
-    write_str(&save_file, m_clock_setting_dialog->get_timer_command());
-    write_str(&save_file, m_clock_setting_dialog->get_timer_music());
-    write_str(&save_file, m_clock_setting_dialog->get_timer_message());
+    m_save_data.write_next_data(m_clock_setting_dialog->get_timer_command());
+    m_save_data.write_next_data(m_clock_setting_dialog->get_timer_music());
+    m_save_data.write_next_data(m_clock_setting_dialog->get_timer_message());
 
-    bool is_sendTips_when_window_will_be_close =
-            m_clock_setting_dialog->get_is_sendTips_when_window_will_be_close();
-    save_file.write((char*)(&is_sendTips_when_window_will_be_close),
-                    sizeof(is_sendTips_when_window_will_be_close));
-    bool is_hide_when_mainWindow_clockButton_click =
-            m_clock_setting_dialog->get_is_hide_when_mainWindow_clockButton_click();
-    save_file.write((char*)(&is_hide_when_mainWindow_clockButton_click),
-                    sizeof(is_hide_when_mainWindow_clockButton_click));
-    bool is_hide_when_app_start =
-            m_clock_setting_dialog->get_is_hide_when_app_start();
-    save_file.write((char*)(&is_hide_when_app_start),
-                    sizeof(is_hide_when_app_start));
+    m_save_data.write_next_data<bool>(m_clock_setting_dialog->get_is_sendTips_when_window_will_be_close());
+    m_save_data.write_next_data<bool>(m_clock_setting_dialog->get_is_hide_when_mainWindow_clockButton_click());
+    m_save_data.write_next_data<bool>(m_clock_setting_dialog->get_is_hide_when_app_start());
 
-    save_alarmClock(&save_file, m_clock_setting_dialog->get_alarm_default_setting());
+    //save_alarmClock(&m_save_data, m_clock_setting_dialog->get_alarm_default_setting());
+    m_clock_setting_dialog->get_alarm_default_setting().write_save_data(&m_save_data);
 
     int num_of_alarmClock = 0;
     QTreeWidgetItemIterator itor_get_alarm_clock_num(ui->treeWidget_alarm_clock);
@@ -443,13 +393,14 @@ void Clock_Main_Window::save_data()
         (*itor_get_alarm_clock_num)->text(0);
         ++itor_get_alarm_clock_num;
     }
-    save_file.write((char*)(&num_of_alarmClock), sizeof(num_of_alarmClock));
+    m_save_data.write_next_data<int>(num_of_alarmClock);
 
     QTreeWidgetItemIterator itor_write_alarm_clock(ui->treeWidget_alarm_clock);
     while(*itor_write_alarm_clock)
     {
         alarmClock_set* alarm_clock_set = (alarmClock_set*)(*itor_write_alarm_clock);
-        save_alarmClock(&save_file, alarm_clock_set->get_alarmClock());
+        //save_alarmClock(&m_save_data, alarm_clock_set->get_alarmClock());
+        alarm_clock_set->get_alarmClock().write_save_data(&m_save_data);
 
         (*itor_write_alarm_clock)->text(0);
         ++itor_write_alarm_clock;
@@ -457,41 +408,37 @@ void Clock_Main_Window::save_data()
 }
 void Clock_Main_Window::read_data()
 {
-    ifstream load_file(".Smallclock_Data");
+    m_save_data.start_read();
 
-    string smallclock_version = read_str(&load_file);
+    string smallclock_version = m_save_data.read_next_data();
     if(smallclock_version == m_const_string_Smallclock_version)
     {
-        m_clock_setting_dialog->set_timer_command(read_str(&load_file));
-        m_clock_setting_dialog->set_timer_music(read_str(&load_file));
-        m_clock_setting_dialog->set_timer_message(read_str(&load_file));
+        m_clock_setting_dialog->set_timer_command(m_save_data.read_next_data());
+        m_clock_setting_dialog->set_timer_music(m_save_data.read_next_data());
+        m_clock_setting_dialog->set_timer_message(m_save_data.read_next_data());
 
-        bool is_sendTips_when_window_will_be_close = 0;
-        bool is_hide_when_mainWindow_clockButton_click = 0;
-        bool is_hide_when_app_start = 0;
-        load_file.read((char*)(&is_sendTips_when_window_will_be_close),
-                       sizeof(is_sendTips_when_window_will_be_close));
-        load_file.read((char*)(&is_hide_when_mainWindow_clockButton_click),
-                       sizeof(is_hide_when_mainWindow_clockButton_click));
-        load_file.read((char*)(&is_hide_when_app_start),
-                       sizeof(is_hide_when_app_start));
         m_clock_setting_dialog
-                ->set_is_sendTips_when_window_will_be_close(is_sendTips_when_window_will_be_close);
+                ->set_is_sendTips_when_window_will_be_close(m_save_data.read_next_data<bool>());
         m_clock_setting_dialog
-                ->set_is_hide_when_mainWindow_clockButton_click(is_hide_when_mainWindow_clockButton_click);
-        m_clock_setting_dialog->set_is_hide_when_app_start(is_hide_when_app_start);
+                ->set_is_hide_when_mainWindow_clockButton_click(m_save_data.read_next_data<bool>());
+        m_clock_setting_dialog->set_is_hide_when_app_start(m_save_data.read_next_data<bool>());
 
-        m_clock_setting_dialog->set_alarm_default_setting(read_alarmClock(&load_file));
+        //m_clock_setting_dialog->set_alarm_default_setting(read_alarmClock(&m_save_data));
+        Alarm_Clock default_alarmClock;
+        default_alarmClock.load_save_data(&m_save_data);
+        m_clock_setting_dialog->set_alarm_default_setting(default_alarmClock);
 
-        int num_of_alarm_clock = 0;
-        load_file.read((char*)(&num_of_alarm_clock), sizeof(num_of_alarm_clock));
+        int num_of_alarm_clock = m_save_data.read_next_data<int>();
 
         for(int i = 0; i < num_of_alarm_clock; i++)
         {
-            Alarm_Clock alarm_clock_load = read_alarmClock(&load_file);
+            Alarm_Clock alarm_clock_load;// = read_alarmClock(&m_save_data);
+            alarm_clock_load.load_save_data(&m_save_data);
             alarmClock_add(alarm_clock_load);
         }
     }
+
+    m_save_data.finish_read();
 }
 
 bool Clock_Main_Window::compare_alarm_clock_day_time_and_now(Alarm_Clock alarm_clock)
@@ -576,39 +523,39 @@ void Clock_Main_Window::do_when_alarm_clock_timer_timeout()
             switch(alarm_clock.m_timeType_choose_range)
             {
                 case Alarm_Clock::Time_Type::range_a_day:
-                {
-                    if(compare_alarm_clock_day_time_and_now(alarm_clock) == true)
                     {
-                        alarm_clock_set->start_remind();
+                        if(compare_alarm_clock_day_time_and_now(alarm_clock) == true)
+                        {
+                            alarm_clock_set->start_remind();
+                        }
+                        break;
                     }
-                    break;
-                }
                 case Alarm_Clock::Time_Type::range_a_week:
-                {
-                    if(compare_alarm_clock_day_time_and_now(alarm_clock) == true &&
-                            compare_alarm_clock_week_day_and_now(alarm_clock) == true)
                     {
-                        alarm_clock_set->start_remind();
+                        if(compare_alarm_clock_day_time_and_now(alarm_clock) == true &&
+                                compare_alarm_clock_week_day_and_now(alarm_clock) == true)
+                        {
+                            alarm_clock_set->start_remind();
+                        }
+                        break;
                     }
-                    break;
-                }
                 case Alarm_Clock::Time_Type::range_a_year:
-                {
-                    if(compare_alarm_clock_day_time_and_now(alarm_clock) == true &&
-                            compare_alarm_clock_month_and_now(alarm_clock) == true)
                     {
-                        alarm_clock_set->start_remind();
+                        if(compare_alarm_clock_day_time_and_now(alarm_clock) == true &&
+                                compare_alarm_clock_month_and_now(alarm_clock) == true)
+                        {
+                            alarm_clock_set->start_remind();
+                        }
+                        break;
                     }
-                    break;
-                }
                 case Alarm_Clock::Time_Type::no_range:
-                {
-                    if(compare_alarm_clock_dateTime_and_now(alarm_clock) == true)
                     {
-                        alarm_clock_set->start_remind();
+                        if(compare_alarm_clock_dateTime_and_now(alarm_clock) == true)
+                        {
+                            alarm_clock_set->start_remind();
+                        }
+                        break;
                     }
-                    break;
-                }
             }
         }
 
@@ -733,10 +680,10 @@ void Clock_Main_Window::on_pushButton_timer_start_stop_clicked()
         }
         else
         {
-//            if(m_command_thread_clocktimer != 0)
-//            {
-//                m_command_thread_clocktimer->end_the_command();
-//            }
+            //            if(m_command_thread_clocktimer != 0)
+            //            {
+            //                m_command_thread_clocktimer->end_the_command();
+            //            }
             ui->clock_number_display_form_timer->stop_flickered_remind();
             clocktimer_initialization();
         }
@@ -745,10 +692,10 @@ void Clock_Main_Window::on_pushButton_timer_start_stop_clicked()
 
 void Clock_Main_Window::on_pushButton_timer_reset_clicked()
 {
-//    if(m_command_thread_clocktimer != 0)
-//    {
-//        m_command_thread_clocktimer->end_the_command();
-//    }
+    //    if(m_command_thread_clocktimer != 0)
+    //    {
+    //        m_command_thread_clocktimer->end_the_command();
+    //    }
     if(m_is_clocktimer_reminding == true)
     {
         do_when_clock_timer_stop_remind();

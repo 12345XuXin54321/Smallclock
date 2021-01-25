@@ -8,6 +8,8 @@
 #include <QDateTime>
 #include <QFileDialog>
 
+#include "../Smallclock_Base/App_Data_Save.h"
+
 #include "clock_choose_alarm_clock_time_form.h"
 
 using namespace std;
@@ -179,6 +181,56 @@ struct Alarm_Clock
             {
                 return "已开启";
             }
+        }
+    }
+
+    void write_save_data(App_Data_Save* data_save)
+    {
+        data_save->write_next_data(m_str_alarm_clock_name);
+        data_save->write_next_data(m_str_message);
+        data_save->write_next_data(m_str_music);
+        data_save->write_next_data(m_str_command);
+
+        data_save->write_next_data<Alarm_Clock::Time_Type>(m_timeType_choose_range);
+        data_save->write_next_data<long long int>(m_longlongint_accurate_time);
+        data_save->write_next_data<int>(m_month);
+        data_save->write_next_data<int>(m_day);
+        data_save->write_next_data<int>(m_hour);
+        data_save->write_next_data<int>(m_min);
+
+        data_save->write_next_data<bool>(m_is_turn_on);
+
+        data_save->write_next_data<int>(m_vector_alarm_time_range_a_week.size());
+        for(size_t i = 0; i < m_vector_alarm_time_range_a_week.size(); i++)
+        {
+            data_save->write_next_data<Alarm_Clock::Day_In_Week>(
+                        m_vector_alarm_time_range_a_week[i]
+                        );
+        }
+    }
+    void load_save_data(App_Data_Save* data_save)
+    {
+        m_str_alarm_clock_name = data_save->read_next_data();
+        m_str_message = data_save->read_next_data();
+        m_str_music = data_save->read_next_data();
+        m_str_command = data_save->read_next_data();
+
+        m_timeType_choose_range = data_save->read_next_data<Alarm_Clock::Time_Type>();
+
+        m_longlongint_accurate_time = data_save->read_next_data<long long int>();
+        m_month = data_save->read_next_data<int>();
+        m_day = data_save->read_next_data<int>();
+        m_hour = data_save->read_next_data<int>();
+        m_min = data_save->read_next_data<int>();
+
+        m_is_turn_on = data_save->read_next_data<bool>();
+
+        int day_in_week_length = data_save->read_next_data<int>();
+        for(int i = 0; i < day_in_week_length; i++)
+        {
+            m_vector_alarm_time_range_a_week.push_back(
+                        data_save->read_next_data<Alarm_Clock::Day_In_Week>()
+                        );
         }
     }
 };
