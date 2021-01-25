@@ -103,6 +103,10 @@ public:
         m_of_data_save->write((char*)(value.c_str()), sizeof(char) * value.size());
         m_of_data_save->write(&char_zero, sizeof(char_zero));
     }
+    void finish_write()
+    {
+        close_outfile();
+    }
 
 
 };

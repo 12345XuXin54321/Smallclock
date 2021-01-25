@@ -58,9 +58,10 @@ void Clock_Setting_Dialog::set_is_hide_when_app_start(bool is_hide_when_app_star
 
 void Clock_Setting_Dialog::save_data()
 {
-    m_string_timer_command = ui->lineEdit_command_path->text().toStdString();
-    m_string_timer_music = ui->lineEdit_music_path->text().toStdString();
-    m_string_timer_message = ui->textEdit_timer_message->toPlainText().toStdString();
+//    m_string_timer_command = ui->lineEdit_command_path->text().toStdString();
+//    m_string_timer_music = ui->lineEdit_music_path->text().toStdString();
+//    m_string_timer_message = ui->textEdit_timer_message->toPlainText().toStdString();
+    save_timer_data();
     m_alarm_clock_setting = temp_alarm_clock_seting;
     m_is_sendTips_when_window_will_be_close =
             ui->checkBox_is_sendTips_when_window_will_be_close->isChecked();
@@ -71,9 +72,10 @@ void Clock_Setting_Dialog::save_data()
 }
 void Clock_Setting_Dialog::show_data()
 {
-    ui->lineEdit_command_path->setText(QString(m_string_timer_command.c_str()));
-    ui->lineEdit_music_path->setText(QString(m_string_timer_music.c_str()));
-    ui->textEdit_timer_message->setText(QString(m_string_timer_message.c_str()));
+//    ui->lineEdit_command_path->setText(QString(m_string_timer_command.c_str()));
+//    ui->lineEdit_music_path->setText(QString(m_string_timer_music.c_str()));
+//    ui->textEdit_timer_message->setText(QString(m_string_timer_message.c_str()));
+    show_timer_data();
     show_alarm_setting(m_alarm_clock_setting);
     temp_alarm_clock_seting = m_alarm_clock_setting;
 
@@ -83,6 +85,20 @@ void Clock_Setting_Dialog::show_data()
             ->setChecked(m_is_hide_when_mainWindow_clockButton_click);
     ui->checkBox_is_hide_when_app_start
             ->setChecked(m_is_hide_when_app_start);
+}
+
+void Clock_Setting_Dialog::show_timer_data()
+{
+    ui->lineEdit_command_path->setText(QString(m_timer_form_data.timer_command_path.c_str()));
+    ui->lineEdit_music_path->setText(QString(m_timer_form_data.timer_music_path.c_str()));
+    ui->textEdit_timer_message->setText(QString(m_timer_form_data.timer_message.c_str()));
+}
+
+void Clock_Setting_Dialog::save_timer_data()
+{
+    m_timer_form_data.timer_command_path = ui->lineEdit_command_path->text().toStdString();
+    m_timer_form_data.timer_music_path = ui->lineEdit_music_path->text().toStdString();
+    m_timer_form_data.timer_message = ui->textEdit_timer_message->toPlainText().toStdString();
 }
 
 void Clock_Setting_Dialog::show_alarm_setting(Alarm_Clock setting)
@@ -121,4 +137,16 @@ void Clock_Setting_Dialog::on_pushButton_set_default_alarm_clock_clicked()
         temp_alarm_clock_seting = new_alarm_clock_dialog->get_alarm_clock_setting();
         show_alarm_setting(temp_alarm_clock_seting);
     }
+}
+
+void Clock_Setting_Dialog::on_pushButton_choose_command_clicked()
+{
+    QString command_path = QFileDialog::getOpenFileName(this);
+    ui->lineEdit_command_path->setText(command_path);
+}
+
+void Clock_Setting_Dialog::on_pushButton_choose_music_clicked()
+{
+    QString music_path = QFileDialog::getOpenFileName(this);
+    ui->lineEdit_music_path->setText(music_path);
 }

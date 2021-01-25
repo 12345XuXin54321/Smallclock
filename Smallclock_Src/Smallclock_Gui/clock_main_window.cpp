@@ -23,25 +23,11 @@
 
 using namespace std;
 
-//usec
-__int128 m_int128_stopwatch_time_use = 0;
-__int128 m_int128_stopwatch_begin_time = 0;
-
-__int128 m_int128_timer_duration = 0;
-__int128 m_int128_timer_time_use = 0;
-__int128 m_int128_timer_begin_time = 0;
-
 Clock_Main_Window::alarmClock_set* m_alarm_clock_item_last_clicked = 0;
 
 bool m_is_stopwatch_start = false;
 
-bool m_is_clocktimer_start = false;
-bool m_is_clocktimer_end = false;
-bool m_is_clocktimer_reminding = false;
-
 bool m_is_mainWindow_show = true;
-
-const int m_const_int_flush_time = 53;
 
 const string m_const_string_Smallclock_version =
         "<Smallclock_version=" +
@@ -52,11 +38,7 @@ const string m_const_string_Smallclock_version =
         to_string(APP_VERSION_REVISION) +
         ">";
 
-auto a = QT_VERSION;
-
 struct timeval tv_temp;
-
-//Command_Do_In_Thread<Clock_Main_Window> *m_command_thread_clocktimer = 0;
 
 Clock_Main_Window::Clock_Main_Window(QWidget *parent)
     : QMainWindow(parent)
@@ -65,9 +47,6 @@ Clock_Main_Window::Clock_Main_Window(QWidget *parent)
     ui->setupUi(this);
 
     setWindowIcon(QIcon(":/program_icons/SmallClock.png"));
-
-    m_timer_flush = new QTimer(this);
-    connect(m_timer_flush, SIGNAL(timeout()), this, SLOT(do_when_flush_timer_timeout()));
 
     m_timer_alarm_clock = new QTimer(this);
     connect(m_timer_alarm_clock, SIGNAL(timeout()), this, SLOT(do_when_alarm_clock_timer_timeout()));
@@ -104,7 +83,6 @@ Clock_Main_Window::Clock_Main_Window(QWidget *parent)
     m_system_tray->setIcon(QIcon(":/program_icons/SmallClock_SystemTray.png"));
     m_system_tray->show();
 
-    clocktimer_initialization();
     read_data();
 
     if(m_clock_setting_dialog->get_is_hide_when_app_start() == true)
@@ -133,124 +111,6 @@ __int128 Clock_Main_Window::get_tv_time_now()
     return (tv_temp.tv_sec * 1000000 + tv_temp.tv_usec);
 }
 
-void Clock_Main_Window::qtimer_start()
-{
-    if(m_is_stopwatch_start == true || m_is_clocktimer_start == true)
-    {
-        m_timer_flush->start(m_const_int_flush_time);
-    }
-}
-void Clock_Main_Window::qtimer_stop()
-{
-    if(m_is_stopwatch_start == false && m_is_clocktimer_start == false)
-    {
-        m_timer_flush->stop();
-    }
-}
-
-void Clock_Main_Window::stopwatch_start()
-{
-    m_is_stopwatch_start = true;
-    ui->pushButton_stopwatch_start_stop->setText("暂停");
-    qtimer_start();
-}
-void Clock_Main_Window::stopwatch_stop()
-{
-    m_is_stopwatch_start = false;
-    qtimer_stop();
-    ui->pushButton_stopwatch_start_stop->setText("开始");
-}
-void Clock_Main_Window::stopwatch_flush()
-{
-    ui->clock_number_display_form_stopwatch->set_time(m_int128_stopwatch_time_use + (get_tv_time_now() - m_int128_stopwatch_begin_time));
-}
-
-void Clock_Main_Window::clocktimer_start()
-{
-    m_is_clocktimer_start = true;
-    ui->pushButton_timer_start_stop->setText("暂停");
-    qtimer_start();
-}
-void Clock_Main_Window::clocktimer_stop()
-{
-    m_is_clocktimer_start = false;
-    qtimer_stop();
-    ui->pushButton_timer_start_stop->setText("开始");
-}
-void Clock_Main_Window::clocktimer_end()
-{
-    m_is_clocktimer_end = true;
-    ui->pushButton_timer_start_stop->setText("停止");
-    ui->clock_number_display_form_timer->start_flickered_remind();
-}
-void Clock_Main_Window::clocktimer_flush()
-{
-    __int128 time_use = m_int128_timer_time_use + (get_tv_time_now() - m_int128_timer_begin_time);
-    if(m_int128_timer_duration - time_use > 0)
-    {
-        ui->clock_number_display_form_timer->set_time(m_int128_timer_duration - time_use);
-    }
-    else
-    {
-        ui->clock_number_display_form_timer->set_time(time_use - m_int128_timer_duration);
-        if(m_is_clocktimer_end == false)
-        {
-            clocktimer_end();
-            do_when_clock_timer_end();
-        }
-    }
-}
-
-void Clock_Main_Window::do_when_clock_timer_end()
-{
-    m_is_clocktimer_reminding = true;
-
-    Message_Window_Show::showMessageWindow("计时器已到时",
-                                           m_clock_setting_dialog->get_timer_message().c_str());
-
-
-    if(m_clock_setting_dialog->get_timer_command().size() > 0)
-    {
-        /*m_command_thread_clocktimer = new Command_Do_In_Thread<Clock_Main_Window>
-                (m_clock_setting_dialog->get_timer_command(),
-                 this,
-                 &Clock_Main_Window::do_when_clocktimer_thread_exit,
-                 &Clock_Main_Window::do_when_clock_timer_stop_remind);*/
-        system((m_clock_setting_dialog->get_timer_command() + " &").c_str());
-    }
-    else
-    {
-        //m_command_thread_clocktimer = 0;
-    }
-    cout << "ding----" << endl;
-}
-void Clock_Main_Window::do_when_clock_timer_stop_remind()
-{
-    m_is_clocktimer_reminding = false;
-    cout << "turn off" << endl;
-    ui->clock_number_display_form_timer->stop_flickered_remind();
-
-}
-void Clock_Main_Window::do_when_clocktimer_thread_exit()
-{
-    m_is_clocktimer_reminding = false;
-    cout << "thread exit" << endl;
-    ui->clock_number_display_form_timer->stop_flickered_remind();
-    clocktimer_initialization();
-}
-void Clock_Main_Window::clocktimer_initialization()
-{
-    m_int128_timer_duration = 0;
-    m_int128_timer_begin_time = 0;
-    m_int128_timer_time_use = 0;
-    //m_command_thread_clocktimer = 0;
-    m_is_clocktimer_start = false;
-    m_is_clocktimer_end = false;
-    m_is_clocktimer_reminding = true;
-    ui->clock_number_display_form_timer->set_time(0);
-    ui->pushButton_timer_start_stop->setText("开始");
-    ui->pushButton_timer_start_stop->setDisabled(true);
-}
 
 void Clock_Main_Window::alarmClock_add(Alarm_Clock new_alarm_clock)
 {
@@ -314,68 +174,13 @@ void Clock_Main_Window::closeEvent(QCloseEvent *event)
     }
 }
 
-/*void save_alarmClock(App_Data_Save* write_data, Alarm_Clock alarm_clock)
-{
-    write_data->write_next_data(alarm_clock.m_str_alarm_clock_name);
-    write_data->write_next_data(alarm_clock.m_str_message);
-    write_data->write_next_data(alarm_clock.m_str_music);
-    write_data->write_next_data(alarm_clock.m_str_command);
-
-    write_data->write_next_data<Alarm_Clock::Time_Type>(alarm_clock.m_timeType_choose_range);
-    write_data->write_next_data<long long int>(alarm_clock.m_longlongint_accurate_time);
-    write_data->write_next_data<int>(alarm_clock.m_month);
-    write_data->write_next_data<int>(alarm_clock.m_day);
-    write_data->write_next_data<int>(alarm_clock.m_hour);
-    write_data->write_next_data<int>(alarm_clock.m_min);
-
-    write_data->write_next_data<bool>(alarm_clock.m_is_turn_on);
-
-    write_data->write_next_data<int>(alarm_clock.m_vector_alarm_time_range_a_week.size());
-    for(size_t i = 0; i < alarm_clock.m_vector_alarm_time_range_a_week.size(); i++)
-    {
-        write_data->write_next_data<Alarm_Clock::Day_In_Week>(
-                    alarm_clock.m_vector_alarm_time_range_a_week[i]
-                    );
-    }
-}
-Alarm_Clock read_alarmClock(App_Data_Save* read_data)
-{
-    Alarm_Clock alarm_clock;
-    alarm_clock.m_str_alarm_clock_name = read_data->read_next_data();
-    alarm_clock.m_str_message = read_data->read_next_data();
-    alarm_clock.m_str_music = read_data->read_next_data();
-    alarm_clock.m_str_command = read_data->read_next_data();
-
-    alarm_clock.m_timeType_choose_range = read_data->read_next_data<Alarm_Clock::Time_Type>();
-
-    alarm_clock.m_longlongint_accurate_time = read_data->read_next_data<long long int>();
-    alarm_clock.m_month = read_data->read_next_data<int>();
-    alarm_clock.m_day = read_data->read_next_data<int>();
-    alarm_clock.m_hour = read_data->read_next_data<int>();
-    alarm_clock.m_min = read_data->read_next_data<int>();
-
-    alarm_clock.m_is_turn_on = read_data->read_next_data<bool>();
-
-    int day_in_week_length = read_data->read_next_data<int>();
-    for(int i = 0; i < day_in_week_length; i++)
-    {
-        alarm_clock.m_vector_alarm_time_range_a_week.push_back(
-                    read_data->read_next_data<Alarm_Clock::Day_In_Week>()
-                    );
-    }
-    return alarm_clock;
-}
-*/
-
 void Clock_Main_Window::save_data()
 {
     m_save_data.start_write();
 
     m_save_data.write_next_data(m_const_string_Smallclock_version);
 
-    m_save_data.write_next_data(m_clock_setting_dialog->get_timer_command());
-    m_save_data.write_next_data(m_clock_setting_dialog->get_timer_music());
-    m_save_data.write_next_data(m_clock_setting_dialog->get_timer_message());
+    m_clock_setting_dialog->get_main_timer_form_setting().write_save_data(&m_save_data);
 
     m_save_data.write_next_data<bool>(m_clock_setting_dialog->get_is_sendTips_when_window_will_be_close());
     m_save_data.write_next_data<bool>(m_clock_setting_dialog->get_is_hide_when_mainWindow_clockButton_click());
@@ -405,6 +210,8 @@ void Clock_Main_Window::save_data()
         (*itor_write_alarm_clock)->text(0);
         ++itor_write_alarm_clock;
     }
+
+    m_save_data.finish_write();
 }
 void Clock_Main_Window::read_data()
 {
@@ -413,9 +220,9 @@ void Clock_Main_Window::read_data()
     string smallclock_version = m_save_data.read_next_data();
     if(smallclock_version == m_const_string_Smallclock_version)
     {
-        m_clock_setting_dialog->set_timer_command(m_save_data.read_next_data());
-        m_clock_setting_dialog->set_timer_music(m_save_data.read_next_data());
-        m_clock_setting_dialog->set_timer_message(m_save_data.read_next_data());
+        Clock_Main_Timer_Form::Timer_Form_Data timer_data;
+        timer_data.load_save_data(&m_save_data);
+        ui->clock_timer_form->set_data(timer_data);
 
         m_clock_setting_dialog
                 ->set_is_sendTips_when_window_will_be_close(m_save_data.read_next_data<bool>());
@@ -483,7 +290,6 @@ bool Clock_Main_Window::compare_alarm_clock_dateTime_and_now(Alarm_Clock alarm_c
 {
     QDateTime now_date_time = QDateTime::currentDateTime();
     QDateTime alarm_clock_date_time = QDateTime::fromSecsSinceEpoch(alarm_clock.m_longlongint_accurate_time);
-    //QDateTime alarm_clock_date_time = QDateTime::fromTime_t(alarm_clock.m_longlongint_accurate_time);
     if(now_date_time.date().year() == alarm_clock_date_time.date().year() &&
             now_date_time.date().dayOfYear() == alarm_clock_date_time.date().dayOfYear() &&
             now_date_time.time().hour() == alarm_clock_date_time.time().hour() &&
@@ -497,17 +303,6 @@ bool Clock_Main_Window::compare_alarm_clock_dateTime_and_now(Alarm_Clock alarm_c
     }
 }
 
-void Clock_Main_Window::do_when_flush_timer_timeout()
-{
-    if(m_is_stopwatch_start == true)
-    {
-        stopwatch_flush();
-    }
-    if(m_is_clocktimer_start == true)
-    {
-        clocktimer_flush();
-    }
-}
 
 void Clock_Main_Window::do_when_alarm_clock_timer_timeout()
 {
@@ -608,104 +403,19 @@ void Clock_Main_Window::do_when_alarmClock_to_be_start_or_stop()
     m_alarm_clock_item_last_clicked->edit_alarm_clock(alarm_clock);
 }
 
-void Clock_Main_Window::on_pushButton_stopwatch_start_stop_clicked()
-{
-    if(m_is_stopwatch_start == false)
-    {
-        m_int128_stopwatch_begin_time = get_tv_time_now();
-
-        ui->clock_number_display_form_stopwatch
-                ->set_time(m_int128_stopwatch_time_use + (get_tv_time_now() - m_int128_stopwatch_begin_time));
-        stopwatch_start();
-    }
-    else
-    {
-        stopwatch_stop();
-
-        long end_time = get_tv_time_now();
-
-        ui->clock_number_display_form_stopwatch
-                ->set_time(m_int128_stopwatch_time_use + (end_time - m_int128_stopwatch_begin_time));
-
-        m_int128_stopwatch_time_use += (end_time - m_int128_stopwatch_begin_time);
-        m_int128_stopwatch_begin_time = 0;
-    }
-}
-
-void Clock_Main_Window::on_pushButton_stopwatch_reset_clicked()
-{
-    stopwatch_stop();
-    m_int128_stopwatch_time_use = 0;
-    ui->clock_number_display_form_stopwatch->set_time(0);
-}
-
-void Clock_Main_Window::on_pushButton_timer_set_clicked()
-{
-    ClockTimer_Choose_Time_Dialog *choose_time_dialog = new ClockTimer_Choose_Time_Dialog(this);
-    //0 -> 取消 1 -> 确认
-    int click_button = choose_time_dialog->exec();
-    if(click_button == 1)
-    {
-        m_int128_timer_duration = choose_time_dialog->get_hour() * (60 * 60) * (1000 * 1000) +
-                choose_time_dialog->get_min() * 60 * (1000 * 1000) +
-                choose_time_dialog->get_sec() * (1000 * 1000);
-        ui->clock_number_display_form_timer->set_time(m_int128_timer_duration);
-        ui->pushButton_timer_start_stop->setDisabled(false);
-    }
-}
-
-void Clock_Main_Window::on_pushButton_timer_start_stop_clicked()
-{
-    if(m_is_clocktimer_start == false)
-    {
-        m_int128_timer_begin_time = get_tv_time_now();
-        m_int128_timer_time_use += (get_tv_time_now() - m_int128_timer_begin_time);
-
-        ui->clock_number_display_form_timer
-                ->set_time(m_int128_timer_duration - m_int128_timer_time_use);
-
-        clocktimer_start();
-    }
-    else
-    {
-        if(m_is_clocktimer_end == false)
-        {
-            clocktimer_stop();
-
-            m_int128_timer_time_use += (get_tv_time_now() - m_int128_timer_begin_time);
-            ui->clock_number_display_form_timer
-                    ->set_time(m_int128_timer_duration - m_int128_timer_time_use);
-
-            m_int128_timer_begin_time = 0;
-        }
-        else
-        {
-            //            if(m_command_thread_clocktimer != 0)
-            //            {
-            //                m_command_thread_clocktimer->end_the_command();
-            //            }
-            ui->clock_number_display_form_timer->stop_flickered_remind();
-            clocktimer_initialization();
-        }
-    }
-}
-
-void Clock_Main_Window::on_pushButton_timer_reset_clicked()
-{
-    //    if(m_command_thread_clocktimer != 0)
-    //    {
-    //        m_command_thread_clocktimer->end_the_command();
-    //    }
-    if(m_is_clocktimer_reminding == true)
-    {
-        do_when_clock_timer_stop_remind();
-    }
-    clocktimer_initialization();
-}
-
 void Clock_Main_Window::on_action_set_triggered()
 {
+    m_clock_setting_dialog->show_main_timer_form_setting(
+                ui->clock_timer_form->get_data()
+                );
+
     m_clock_setting_dialog->exec();
+
+    ui->clock_timer_form->set_data(
+                m_clock_setting_dialog->get_main_timer_form_setting()
+                );
+
+    save_data();
 }
 
 void Clock_Main_Window::pushButton_alarmClock_add_new_clicked()

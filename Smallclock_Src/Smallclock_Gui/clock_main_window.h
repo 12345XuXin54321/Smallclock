@@ -123,23 +123,12 @@ public:
     };
 
 private slots:
-    void do_when_flush_timer_timeout();
 
     void do_when_alarm_clock_timer_timeout();
 
     void do_when_alarmClock_to_be_stop_remind();
     void do_when_alarmClock_to_be_start_or_stop();
     void alarmClockTreeWidgetItem_rightKey_menu_clicked(const QPoint& point);
-
-    void on_pushButton_stopwatch_start_stop_clicked();
-
-    void on_pushButton_stopwatch_reset_clicked();
-
-    void on_pushButton_timer_set_clicked();
-
-    void on_pushButton_timer_start_stop_clicked();
-
-    void on_pushButton_timer_reset_clicked();
 
     void on_action_set_triggered();
 
@@ -155,7 +144,6 @@ private slots:
 private:
     Ui::Clock_Main_Window *ui;
 
-    QTimer *m_timer_flush;
     QTimer *m_timer_alarm_clock;
 
     Clock_Setting_Dialog *m_clock_setting_dialog;
@@ -169,21 +157,9 @@ private:
 
     __int128 get_tv_time_now();
 
-    void qtimer_start();
-    void qtimer_stop();
-
     void stopwatch_start();
     void stopwatch_stop();
     void stopwatch_flush();
-
-    void clocktimer_start();
-    void clocktimer_stop();
-    void clocktimer_end();
-    void clocktimer_flush();
-    void do_when_clock_timer_end();
-    void do_when_clock_timer_stop_remind();
-    void do_when_clocktimer_thread_exit();
-    void clocktimer_initialization();
 
     bool compare_alarm_clock_day_time_and_now(Alarm_Clock alarm_clock);
     bool compare_alarm_clock_week_day_and_now(Alarm_Clock alarm_clock);
