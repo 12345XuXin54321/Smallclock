@@ -26,12 +26,9 @@ public:
 
     void start_play(string music_path)
     {
-        if(m_player != NULL)
+        if(is_media_player_playing() == true)
         {
-            if(libvlc_media_player_is_playing(m_player) == true)
-            {
-                stop_play();
-            }
+            stop_play();
         }
         m_media = libvlc_media_new_location(m_inst, ("file://" + music_path).c_str());
         m_player = libvlc_media_player_new_from_media(m_media);
@@ -40,14 +37,22 @@ public:
     }
     void stop_play()
     {
+        if(is_media_player_playing() == true)
+        {
+            libvlc_media_player_stop(m_player);
+            libvlc_media_player_release(m_player);
+            m_player = NULL;
+        }
+    }
+    bool is_media_player_playing()
+    {
         if(m_player != NULL)
         {
-            if(libvlc_media_player_is_playing(m_player) == true)
-            {
-                libvlc_media_player_stop(m_player);
-                libvlc_media_player_release(m_player);
-                m_player = NULL;
-            }
+            return libvlc_media_player_is_playing(m_player);
+        }
+        else
+        {
+            return false;
         }
     }
 };

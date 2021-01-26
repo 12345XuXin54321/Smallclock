@@ -23,7 +23,7 @@ void New_Alarm_Clock_Dialog::set_week_days_choose(Alarm_Clock alarm_clock_settin
     ui->checkBox_Sat->setChecked(false);
     ui->checkBox_Sun->setChecked(false);
 
-    for(auto choose_day : alarm_clock_setting.m_vector_alarm_time_range_a_week)
+    for(auto choose_day : alarm_clock_setting.m_alarm_clock_data.vector_alarm_time_range_a_week)
     {
         switch (choose_day)
         {
@@ -67,40 +67,40 @@ void New_Alarm_Clock_Dialog::set_week_days_choose(Alarm_Clock alarm_clock_settin
 }
 void New_Alarm_Clock_Dialog::get_week_days_choose(Alarm_Clock* alarm_clock_setting)
 {
-    alarm_clock_setting->m_vector_alarm_time_range_a_week.clear();
+    alarm_clock_setting->m_alarm_clock_data.vector_alarm_time_range_a_week.clear();
     if(ui->checkBox_Mon->isChecked() == true)
     {
-        alarm_clock_setting->m_vector_alarm_time_range_a_week.push_back(Alarm_Clock::Mon);
+        alarm_clock_setting->m_alarm_clock_data.vector_alarm_time_range_a_week.push_back(Alarm_Clock::Mon);
     }
     if(ui->checkBox_Tues->isChecked() == true)
     {
-        alarm_clock_setting->m_vector_alarm_time_range_a_week.push_back(Alarm_Clock::Tues);
+        alarm_clock_setting->m_alarm_clock_data.vector_alarm_time_range_a_week.push_back(Alarm_Clock::Tues);
     }
     if(ui->checkBox_Wed->isChecked() == true)
     {
-        alarm_clock_setting->m_vector_alarm_time_range_a_week.push_back(Alarm_Clock::Wed);
+        alarm_clock_setting->m_alarm_clock_data.vector_alarm_time_range_a_week.push_back(Alarm_Clock::Wed);
     }
     if(ui->checkBox_Thur->isChecked() == true)
     {
-        alarm_clock_setting->m_vector_alarm_time_range_a_week.push_back(Alarm_Clock::Thur);
+        alarm_clock_setting->m_alarm_clock_data.vector_alarm_time_range_a_week.push_back(Alarm_Clock::Thur);
     }
     if(ui->checkBox_Fri->isChecked() == true)
     {
-        alarm_clock_setting->m_vector_alarm_time_range_a_week.push_back(Alarm_Clock::Fri);
+        alarm_clock_setting->m_alarm_clock_data.vector_alarm_time_range_a_week.push_back(Alarm_Clock::Fri);
     }
     if(ui->checkBox_Sat->isChecked() == true)
     {
-        alarm_clock_setting->m_vector_alarm_time_range_a_week.push_back(Alarm_Clock::Sat);
+        alarm_clock_setting->m_alarm_clock_data.vector_alarm_time_range_a_week.push_back(Alarm_Clock::Sat);
     }
     if(ui->checkBox_Sun->isChecked() == true)
     {
-        alarm_clock_setting->m_vector_alarm_time_range_a_week.push_back(Alarm_Clock::Sun);
+        alarm_clock_setting->m_alarm_clock_data.vector_alarm_time_range_a_week.push_back(Alarm_Clock::Sun);
     }
 }
 
 void New_Alarm_Clock_Dialog::set_range_choose(Alarm_Clock alarm_clock_setting)
 {
-    switch(alarm_clock_setting.m_timeType_choose_range)
+    switch(alarm_clock_setting.m_alarm_clock_data.timeType_choose_range)
     {
         case Alarm_Clock::Time_Type::no_range:
         {
@@ -128,19 +128,19 @@ void New_Alarm_Clock_Dialog::get_range_choose(Alarm_Clock* alarm_clock_setting)
 {
     if(ui->radioButton_no_range->isChecked() == true)
     {
-        alarm_clock_setting->m_timeType_choose_range = Alarm_Clock::Time_Type::no_range;
+        alarm_clock_setting->m_alarm_clock_data.timeType_choose_range = Alarm_Clock::Time_Type::no_range;
     }
     else if(ui->radioButton_range_a_day->isChecked() == true)
     {
-        alarm_clock_setting->m_timeType_choose_range = Alarm_Clock::Time_Type::range_a_day;
+        alarm_clock_setting->m_alarm_clock_data.timeType_choose_range = Alarm_Clock::Time_Type::range_a_day;
     }
     else if(ui->radioButton_range_a_week->isChecked() == true)
     {
-        alarm_clock_setting->m_timeType_choose_range = Alarm_Clock::Time_Type::range_a_week;
+        alarm_clock_setting->m_alarm_clock_data.timeType_choose_range = Alarm_Clock::Time_Type::range_a_week;
     }
     else if(ui->radioButton_range_a_year->isChecked() == true)
     {
-        alarm_clock_setting->m_timeType_choose_range = Alarm_Clock::Time_Type::range_a_year;
+        alarm_clock_setting->m_alarm_clock_data.timeType_choose_range = Alarm_Clock::Time_Type::range_a_year;
     }
 }
 
@@ -148,40 +148,40 @@ void New_Alarm_Clock_Dialog::set_alarm_clock(Alarm_Clock setting_data)
 {
     m_alarm_clock_setting = setting_data;
 
-    ui->alarm_clock_choose_time_form->set_time(setting_data.m_month,
-                                               setting_data.m_day,
-                                               setting_data.m_hour,
-                                               setting_data.m_min);
+    ui->alarm_clock_choose_time_form->set_time(setting_data.m_alarm_clock_data.int_month,
+                                               setting_data.m_alarm_clock_data.int_day,
+                                               setting_data.m_alarm_clock_data.int_hour,
+                                               setting_data.m_alarm_clock_data.int_min);
 
     set_week_days_choose(setting_data);
 
     ui->dateTimeEdit_no_range->
-            setDateTime(QDateTime::fromSecsSinceEpoch(setting_data.m_longlongint_accurate_time));
+            setDateTime(QDateTime::fromSecsSinceEpoch(setting_data.m_alarm_clock_data.longlongint_accurate_time));
 
     set_range_choose(setting_data);
 
-    ui->lineEdit_alarm_clock_name->setText(QString(setting_data.m_str_alarm_clock_name.c_str()));
-    ui->lineEdit_alarm_clock_command_path->setText(QString(setting_data.m_str_command.c_str()));
-    ui->lineEdit_alarm_clock_music_path->setText(QString(setting_data.m_str_music.c_str()));
-    ui->textEdit_alarm_clock_message->setText(QString(setting_data.m_str_message.c_str()));
+    ui->lineEdit_alarm_clock_name->setText(QString(setting_data.m_alarm_clock_data.str_alarm_clock_name.c_str()));
+    ui->lineEdit_alarm_clock_command_path->setText(QString(setting_data.m_alarm_clock_data.str_command_path.c_str()));
+    ui->lineEdit_alarm_clock_music_path->setText(QString(setting_data.m_alarm_clock_data.str_music_path.c_str()));
+    ui->textEdit_alarm_clock_message->setText(QString(setting_data.m_alarm_clock_data.str_message.c_str()));
 }
 Alarm_Clock New_Alarm_Clock_Dialog::get_alarm_clock_setting()
 {
     get_week_days_choose(&m_alarm_clock_setting);
-    ui->alarm_clock_choose_time_form->get_time(&(m_alarm_clock_setting.m_month),
-                                               &(m_alarm_clock_setting.m_day),
-                                               &(m_alarm_clock_setting.m_hour),
-                                               &(m_alarm_clock_setting.m_min));
+    ui->alarm_clock_choose_time_form->get_time(&(m_alarm_clock_setting.m_alarm_clock_data.int_month),
+                                               &(m_alarm_clock_setting.m_alarm_clock_data.int_day),
+                                               &(m_alarm_clock_setting.m_alarm_clock_data.int_hour),
+                                               &(m_alarm_clock_setting.m_alarm_clock_data.int_min));
 
-    m_alarm_clock_setting.m_longlongint_accurate_time =
+    m_alarm_clock_setting.m_alarm_clock_data.longlongint_accurate_time =
             ui->dateTimeEdit_no_range->dateTime().toSecsSinceEpoch();
 
     get_range_choose(&m_alarm_clock_setting);
 
-    m_alarm_clock_setting.m_str_alarm_clock_name = ui->lineEdit_alarm_clock_name->text().toStdString();
-    m_alarm_clock_setting.m_str_command = ui->lineEdit_alarm_clock_command_path->text().toStdString();
-    m_alarm_clock_setting.m_str_music = ui->lineEdit_alarm_clock_music_path->text().toStdString();
-    m_alarm_clock_setting.m_str_message = ui->textEdit_alarm_clock_message->toPlainText().toStdString();
+    m_alarm_clock_setting.m_alarm_clock_data.str_alarm_clock_name = ui->lineEdit_alarm_clock_name->text().toStdString();
+    m_alarm_clock_setting.m_alarm_clock_data.str_command_path = ui->lineEdit_alarm_clock_command_path->text().toStdString();
+    m_alarm_clock_setting.m_alarm_clock_data.str_music_path = ui->lineEdit_alarm_clock_music_path->text().toStdString();
+    m_alarm_clock_setting.m_alarm_clock_data.str_message = ui->textEdit_alarm_clock_message->toPlainText().toStdString();
 
     return m_alarm_clock_setting;
 }

@@ -16,6 +16,7 @@ using namespace std;
 
 struct Alarm_Clock
 {
+public:
     enum Time_Type
     {
         range_a_day,
@@ -35,203 +36,189 @@ struct Alarm_Clock
         Sun = 7
     };
 
-    string m_str_alarm_clock_name = "新闹钟";
-    string m_str_message;
-    string m_str_music;
-    string m_str_command;
+    struct Alarm_Clock_Data
+    {
+        string str_alarm_clock_name = "新闹钟";
+        string str_message;
+        string str_music_path;
+        string str_command_path;
 
-    Time_Type m_timeType_choose_range = Time_Type::range_a_day;
+        Time_Type timeType_choose_range = Time_Type::range_a_day;
 
-    /// the number of seconds since
-    /// 1970-01-01T00:00:00 Universal Coordinated Time.
-    long long int m_longlongint_accurate_time = QDateTime::currentDateTime().toSecsSinceEpoch();
-    int m_month = QDate::currentDate().month();
-    int m_day = QDate::currentDate().day();
-    int m_hour = QTime::currentTime().hour();
-    int m_min = QTime::currentTime().minute();
+        /// the number of seconds since
+        /// 1970-01-01T00:00:00 Universal Coordinated Time.
+        long long int longlongint_accurate_time = QDateTime::currentDateTime().toSecsSinceEpoch();
+        int int_month = QDate::currentDate().month();
+        int int_day = QDate::currentDate().day();
+        int int_hour = QTime::currentTime().hour();
+        int int_min = QTime::currentTime().minute();
 
-    bool m_is_turn_on = true;
-    bool m_is_remind = false;
+        bool is_turn_on = true;
 
-    vector<Day_In_Week> m_vector_alarm_time_range_a_week;
+        vector<Day_In_Week> vector_alarm_time_range_a_week;
+
+        void write_save_data(App_Data_Save* data_save)
+        {
+            data_save->write_next_data(str_alarm_clock_name);
+            data_save->write_next_data(str_message);
+            data_save->write_next_data(str_music_path);
+            data_save->write_next_data(str_command_path);
+
+            data_save->write_next_data<Alarm_Clock::Time_Type>(timeType_choose_range);
+            data_save->write_next_data<long long int>(longlongint_accurate_time);
+            data_save->write_next_data<int>(int_month);
+            data_save->write_next_data<int>(int_day);
+            data_save->write_next_data<int>(int_hour);
+            data_save->write_next_data<int>(int_min);
+
+            data_save->write_next_data<bool>(is_turn_on);
+
+            data_save->write_next_data<int>(vector_alarm_time_range_a_week.size());
+            for(size_t i = 0; i < vector_alarm_time_range_a_week.size(); i++)
+            {
+                data_save->write_next_data<Alarm_Clock::Day_In_Week>(
+                            vector_alarm_time_range_a_week[i]
+                            );
+            }
+        }
+        void load_save_data(App_Data_Save* data_save)
+        {
+            str_alarm_clock_name = data_save->read_next_data();
+            str_message = data_save->read_next_data();
+            str_music_path = data_save->read_next_data();
+            str_command_path = data_save->read_next_data();
+
+            timeType_choose_range = data_save->read_next_data<Alarm_Clock::Time_Type>();
+
+            longlongint_accurate_time = data_save->read_next_data<long long int>();
+            int_month = data_save->read_next_data<int>();
+            int_day = data_save->read_next_data<int>();
+            int_hour = data_save->read_next_data<int>();
+            int_min = data_save->read_next_data<int>();
+
+            is_turn_on = data_save->read_next_data<bool>();
+
+            int day_in_week_length = data_save->read_next_data<int>();
+            for(int i = 0; i < day_in_week_length; i++)
+            {
+                vector_alarm_time_range_a_week.push_back(
+                            data_save->read_next_data<Alarm_Clock::Day_In_Week>()
+                            );
+            }
+        }
+
+    } m_alarm_clock_data;
+
+    //bool m_is_remind = false;
 
     string get_str_timeType_choose_range()
     {
-        switch(m_timeType_choose_range)
+        switch(m_alarm_clock_data.timeType_choose_range)
         {
             case Time_Type::no_range:
-            {
-                return "仅一次";
-            }
-            case Time_Type::range_a_day:
-            {
-                return "每天一次";
-            }
-            case Time_Type::range_a_week:
-            {
-                string return_data;
-                return_data.reserve(128);
-                size_t p_vector = 0;
-                for(auto choose_days : m_vector_alarm_time_range_a_week)
                 {
-                    switch(choose_days)
-                    {
-                        case Day_In_Week::Mon:
-                        {
-                            return_data += "周一";
-                            break;
-                        }
-                        case Day_In_Week::Tues:
-                        {
-                            return_data += "周二";
-                            break;
-                        }
-                        case Day_In_Week::Wed:
-                        {
-                            return_data += "周三";
-                            break;
-                        }
-                        case Day_In_Week::Thur:
-                        {
-                            return_data += "周四";
-                            break;
-                        }
-                        case Day_In_Week::Fri:
-                        {
-                            return_data += "周五";
-                            break;
-                        }
-                        case Day_In_Week::Sat:
-                        {
-                            return_data += "周六";
-                            break;
-                        }
-                        case Day_In_Week::Sun:
-                        {
-                            return_data += "周日";
-                            break;
-                        }
-                    }
-                    if(p_vector < m_vector_alarm_time_range_a_week.size() - 1)
-                    {
-                        if(p_vector % 2 == 0)
-                        {
-                            return_data += "　";
-                        }
-                        else
-                        {
-                            return_data += "\n";
-                        }
-                        p_vector++;
-                    }
+                    return "仅一次";
                 }
-                return return_data;
-            }
+            case Time_Type::range_a_day:
+                {
+                    return "每天一次";
+                }
+            case Time_Type::range_a_week:
+                {
+                    string return_data;
+                    return_data.reserve(128);
+                    size_t p_vector = 0;
+                    for(auto choose_days : m_alarm_clock_data.vector_alarm_time_range_a_week)
+                    {
+                        switch(choose_days)
+                        {
+                            case Day_In_Week::Mon:
+                                {
+                                    return_data += "周一";
+                                    break;
+                                }
+                            case Day_In_Week::Tues:
+                                {
+                                    return_data += "周二";
+                                    break;
+                                }
+                            case Day_In_Week::Wed:
+                                {
+                                    return_data += "周三";
+                                    break;
+                                }
+                            case Day_In_Week::Thur:
+                                {
+                                    return_data += "周四";
+                                    break;
+                                }
+                            case Day_In_Week::Fri:
+                                {
+                                    return_data += "周五";
+                                    break;
+                                }
+                            case Day_In_Week::Sat:
+                                {
+                                    return_data += "周六";
+                                    break;
+                                }
+                            case Day_In_Week::Sun:
+                                {
+                                    return_data += "周日";
+                                    break;
+                                }
+                        }
+                        if(p_vector < m_alarm_clock_data.vector_alarm_time_range_a_week.size() - 1)
+                        {
+                            if(p_vector % 2 == 0)
+                            {
+                                return_data += "　";
+                            }
+                            else
+                            {
+                                return_data += "\n";
+                            }
+                            p_vector++;
+                        }
+                    }
+                    return return_data;
+                }
             case Time_Type::range_a_year:
-            {
-                return "每年一次";
-            }
+                {
+                    return "每年一次";
+                }
         }
         return string();
     }
 
     string get_str_time()
     {
-        switch(m_timeType_choose_range)
+        switch(m_alarm_clock_data.timeType_choose_range)
         {
             case Time_Type::no_range:
-            {
-                auto dateTime = QDateTime::fromSecsSinceEpoch(m_longlongint_accurate_time);
-                return to_string(dateTime.date().year()) + "年"
+                {
+                    auto dateTime = QDateTime::fromSecsSinceEpoch(m_alarm_clock_data.longlongint_accurate_time);
+                    return to_string(dateTime.date().year()) + "年"
                         + to_string(dateTime.date().month()) + "月"
                         + to_string(dateTime.date().day()) + "日"
                         + to_string(dateTime.time().hour()) + "时"
                         + to_string(dateTime.time().minute()) + "分";
-            }
+                }
             case Time_Type::range_a_day:
             case Time_Type::range_a_week:
-            {
-                return to_string(m_hour) + "时"
-                        + to_string(m_min) + "分";
-            }
+                {
+                    return to_string(m_alarm_clock_data.int_hour) + "时"
+                        + to_string(m_alarm_clock_data.int_min) + "分";
+                }
             case Time_Type::range_a_year:
-            {
-                return to_string(m_month) + "月"
-                        + to_string(m_day) + "日"
-                        + to_string(m_hour) + "时"
-                        + to_string(m_min) + "分";
-            }
+                {
+                    return to_string(m_alarm_clock_data.int_month) + "月"
+                        + to_string(m_alarm_clock_data.int_day) + "日"
+                        + to_string(m_alarm_clock_data.int_hour) + "时"
+                        + to_string(m_alarm_clock_data.int_min) + "分";
+                }
         }
         return string();
-    }
-
-    string get_str_alarm_clock_state()
-    {
-        if(m_is_turn_on == false)
-        {
-            return "未开启";
-        }
-        else
-        {
-            if(m_is_remind == true)
-            {
-                return "提醒中";
-            }
-            else
-            {
-                return "已开启";
-            }
-        }
-    }
-
-    void write_save_data(App_Data_Save* data_save)
-    {
-        data_save->write_next_data(m_str_alarm_clock_name);
-        data_save->write_next_data(m_str_message);
-        data_save->write_next_data(m_str_music);
-        data_save->write_next_data(m_str_command);
-
-        data_save->write_next_data<Alarm_Clock::Time_Type>(m_timeType_choose_range);
-        data_save->write_next_data<long long int>(m_longlongint_accurate_time);
-        data_save->write_next_data<int>(m_month);
-        data_save->write_next_data<int>(m_day);
-        data_save->write_next_data<int>(m_hour);
-        data_save->write_next_data<int>(m_min);
-
-        data_save->write_next_data<bool>(m_is_turn_on);
-
-        data_save->write_next_data<int>(m_vector_alarm_time_range_a_week.size());
-        for(size_t i = 0; i < m_vector_alarm_time_range_a_week.size(); i++)
-        {
-            data_save->write_next_data<Alarm_Clock::Day_In_Week>(
-                        m_vector_alarm_time_range_a_week[i]
-                        );
-        }
-    }
-    void load_save_data(App_Data_Save* data_save)
-    {
-        m_str_alarm_clock_name = data_save->read_next_data();
-        m_str_message = data_save->read_next_data();
-        m_str_music = data_save->read_next_data();
-        m_str_command = data_save->read_next_data();
-
-        m_timeType_choose_range = data_save->read_next_data<Alarm_Clock::Time_Type>();
-
-        m_longlongint_accurate_time = data_save->read_next_data<long long int>();
-        m_month = data_save->read_next_data<int>();
-        m_day = data_save->read_next_data<int>();
-        m_hour = data_save->read_next_data<int>();
-        m_min = data_save->read_next_data<int>();
-
-        m_is_turn_on = data_save->read_next_data<bool>();
-
-        int day_in_week_length = data_save->read_next_data<int>();
-        for(int i = 0; i < day_in_week_length; i++)
-        {
-            m_vector_alarm_time_range_a_week.push_back(
-                        data_save->read_next_data<Alarm_Clock::Day_In_Week>()
-                        );
-        }
     }
 };
 
