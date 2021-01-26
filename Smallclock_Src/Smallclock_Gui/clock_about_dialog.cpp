@@ -2,22 +2,12 @@
 
 #include <QFile>
 
-#include "../../config.h"
+#include "../Smallclock_App/Smallclock_Version.h"
 
 #include "clock_about_dialog.h"
 #include "ui_clock_about_dialog.h"
 
 using namespace std;
-
-const string m_const_str_Smallclock_version =
-        "Smallclock " +
-        to_string(APP_VERSION_MAJOR) +
-        "." +
-        to_string(APP_VERSION_MINOR) +
-        "." +
-        to_string(APP_VERSION_REVISION) +
-        "-" +
-        to_string(APP_BUILD_TIMES);
 
 Clock_About_Dialog::Clock_About_Dialog(QWidget *parent) :
     QDialog(parent),
@@ -25,7 +15,7 @@ Clock_About_Dialog::Clock_About_Dialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->m_title_lineEdit->setText(QString::fromStdString(m_const_str_Smallclock_version));
+    ui->m_title_lineEdit->setText(QString::fromStdString(const_str_Smallclock_version));
     ui->m_buildTime_lineEdit->setText("built on " +
                                       QString(__DATE__) +
                                       " " +
@@ -35,6 +25,13 @@ Clock_About_Dialog::Clock_About_Dialog(QWidget *parent) :
     readme_file.open(QFile::OpenModeFlag::ReadOnly);
     ui->m_expository_textEdit->
             setText(QString(readme_file.readAll()));
+
+    string str_base_on = const_str_gcc_version + "\n" +
+            const_str_Qt_version + "\n" +
+            const_str_libnotify_version + "\n" +
+            const_str_libvlc_version;
+    ui->m_base_on_textEdit->setText(QString(str_base_on.c_str()));
+
 }
 
 Clock_About_Dialog::~Clock_About_Dialog()

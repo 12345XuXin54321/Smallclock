@@ -19,20 +19,21 @@
 #include "clock_main_window.h"
 #include "./ui_clock_main_window.h"
 
-#include "../../config.h"
+//#include "../../config.h"
+#include "../Smallclock_App/Smallclock_Version.h"
 
 using namespace std;
 
 bool m_is_mainWindow_show = true;
 
-const string m_const_string_Smallclock_version =
-        "<Smallclock_version=" +
-        to_string(APP_VERSION_MAJOR) +
-        "." +
-        to_string(APP_VERSION_MINOR) +
-        "." +
-        to_string(APP_VERSION_REVISION) +
-        ">";
+//const string m_const_string_Smallclock_version =
+//        "<Smallclock_version=" +
+//        to_string(APP_VERSION_MAJOR) +
+//        "." +
+//        to_string(APP_VERSION_MINOR) +
+//        "." +
+//        to_string(APP_VERSION_REVISION) +
+//        ">";
 
 Clock_Main_Window::Clock_Main_Window(QWidget *parent)
     : QMainWindow(parent)
@@ -138,9 +139,12 @@ void Clock_Main_Window::save_data()
 {
     m_save_data.start_write();
 
-    m_save_data.write_next_data(m_const_string_Smallclock_version);
+    m_save_data.write_next_data(const_str_Smallclock_data_version);
+    m_save_data.write_next_data(const_str_Smallclock_version_write_in_data);
 
-    m_clock_setting_dialog->get_main_timer_form_setting().write_save_data(&m_save_data);
+    ui->clock_timer_form->get_data().write_save_data(&m_save_data);
+
+    //m_clock_setting_dialog->get_main_timer_form_setting().write_save_data(&m_save_data);
 
     m_save_data.write_next_data<bool>(m_clock_setting_dialog->get_is_sendTips_when_window_will_be_close());
     m_save_data.write_next_data<bool>(m_clock_setting_dialog->get_is_hide_when_mainWindow_clockButton_click());
@@ -155,8 +159,10 @@ void Clock_Main_Window::read_data()
     m_save_data.start_read();
 
     string smallclock_version = m_save_data.read_next_data();
-    if(smallclock_version == m_const_string_Smallclock_version)
+    if(smallclock_version == const_str_Smallclock_data_version)
     {
+        string Smallclock_version = m_save_data.read_next_data();
+
         Clock_Main_Timer_Form::Timer_Form_Data timer_data;
         timer_data.load_save_data(&m_save_data);
         ui->clock_timer_form->set_data(timer_data);
