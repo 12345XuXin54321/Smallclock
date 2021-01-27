@@ -134,8 +134,6 @@ void Clock_Main_Window::save_data()
 
     ui->clock_timer_form->get_data().write_save_data(&m_save_data);
 
-    //m_clock_setting_dialog->get_main_timer_form_setting().write_save_data(&m_save_data);
-
     m_save_data.write_next_data<bool>(m_clock_setting_dialog->get_is_sendTips_when_window_will_be_close());
     m_save_data.write_next_data<bool>(m_clock_setting_dialog->get_is_hide_when_mainWindow_clockButton_click());
     m_save_data.write_next_data<bool>(m_clock_setting_dialog->get_is_hide_when_app_start());
