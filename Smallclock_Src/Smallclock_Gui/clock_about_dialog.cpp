@@ -21,10 +21,15 @@ Clock_About_Dialog::Clock_About_Dialog(QWidget *parent) :
                                       " " +
                                       QString(__TIME__));
 
-    QFile readme_file(":/program_documents/SmallClock_Readme.txt");
+    QFile readme_file(":/program_documents/Readme");
     readme_file.open(QFile::OpenModeFlag::ReadOnly);
     ui->m_expository_textEdit->
             setText(QString(readme_file.readAll()));
+
+    QFile updata_file(":/program_documents/Updata_Log");
+    updata_file.open(QFile::OpenModeFlag::ReadOnly);
+    ui->m_updata_log_textEdit->
+            setText(QString(updata_file.readAll()));
 
     string str_base_on = const_str_gcc_version + "\n" +
             const_str_Qt_version + "\n" +

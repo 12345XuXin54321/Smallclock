@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>program_documents/SmallClock_Readme.txt</file>
+        <file>program_documents/Readme</file>
+        <file>program_documents/Updata_Log</file>
     </qresource>
 </RCC>
