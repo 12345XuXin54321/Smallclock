@@ -5,6 +5,7 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QResizeEvent>
 
 namespace Ui {
     class Clock_Number_Display_Form;
@@ -29,11 +30,18 @@ public:
 
 private slots:
     void do_to_flickered_remind();
+    void resizeEvent(QResizeEvent * event);
 
 private:
     Ui::Clock_Number_Display_Form *ui;
 
     QTimer *m_flickered_remind_timer;
+
+    struct width_height_ratio
+    {
+        double width_of_form = 642;
+        double height_of_form = 162;
+    } m_width_height_ratio;
 
     void set_style_diaphaneity();
     void set_style(bool value);

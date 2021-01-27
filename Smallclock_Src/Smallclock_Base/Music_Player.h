@@ -21,6 +21,7 @@ public:
     }
     ~Music_Player()
     {
+        stop_play();
         libvlc_release(m_inst);
     }
 

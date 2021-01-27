@@ -3,7 +3,7 @@ FILE(GLOB SRC_FILES "./*.cpp" "./*.c")
 
 FILE(GLOB_RECURSE QRC_SOURCE_FILES "./resources/*.qrc")
 
-qt6_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
+qt5_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
 
 # libvlc start
 pkg_check_modules(LIB_VLC libvlc)
@@ -23,7 +23,3 @@ add_executable(Smallclock
 
 target_link_libraries(Smallclock PUBLIC Smallclock_Base)
 target_link_libraries(Smallclock PUBLIC Smallclock_Gui)
-
-target_link_libraries(Smallclock PUBLIC Qt6::Widgets)
-target_link_libraries(Smallclock PUBLIC vlc)
-target_link_libraries(Smallclock PUBLIC notify)

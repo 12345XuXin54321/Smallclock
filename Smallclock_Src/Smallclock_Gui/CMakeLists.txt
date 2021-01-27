@@ -17,7 +17,7 @@ set(CMAKE_AUTORCC ON)
 #    endif()
 #endif()
 
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 find_package(PkgConfig REQUIRED)
 
@@ -36,5 +36,5 @@ add_library(Smallclock_Gui STATIC
   ${UI_FILES}
 )
 
-target_link_libraries(Smallclock_Gui PUBLIC Qt6::Widgets)
+target_link_libraries(Smallclock_Gui PUBLIC Qt5::Widgets)
 target_link_libraries(Smallclock_Gui PUBLIC notify)

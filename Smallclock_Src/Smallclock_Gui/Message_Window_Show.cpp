@@ -19,7 +19,7 @@ void Message_Window_Show::showMessageWindow(const char* summary,
     notify_init(APP_NAME);
     NotifyNotification *notify = notify_notification_new(summary,
                                                          message_body,
-                                                         ":/program_icons/SmallClock.png");
+                                                         "");
     notify_notification_show(notify, NULL);
 }
 

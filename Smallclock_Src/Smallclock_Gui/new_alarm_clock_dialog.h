@@ -109,8 +109,6 @@ public:
 
     } m_alarm_clock_data;
 
-    //bool m_is_remind = false;
-
     string get_str_timeType_choose_range()
     {
         switch(m_alarm_clock_data.timeType_choose_range)

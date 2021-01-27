@@ -19,21 +19,11 @@
 #include "clock_main_window.h"
 #include "./ui_clock_main_window.h"
 
-//#include "../../config.h"
 #include "../Smallclock_App/Smallclock_Version.h"
 
 using namespace std;
 
 bool m_is_mainWindow_show = true;
-
-//const string m_const_string_Smallclock_version =
-//        "<Smallclock_version=" +
-//        to_string(APP_VERSION_MAJOR) +
-//        "." +
-//        to_string(APP_VERSION_MINOR) +
-//        "." +
-//        to_string(APP_VERSION_REVISION) +
-//        ">";
 
 Clock_Main_Window::Clock_Main_Window(QWidget *parent)
     : QMainWindow(parent)

@@ -62,7 +62,7 @@ void Clock_Main_AlarmClock_Form::alarmClock_add(Alarm_Clock new_alarm_clock)
     ui->treeWidget_alarm_clock->addTopLevelItem(alarm_clock_set);
 }
 void Clock_Main_AlarmClock_Form::alarmClock_edit(Alarm_Clock new_alarm_clock,
-                                        alarmClock_set* alarm_clock_set)
+                                                 alarmClock_set* alarm_clock_set)
 {
     alarm_clock_set->edit_alarm_clock(new_alarm_clock);
 }
@@ -70,7 +70,8 @@ void Clock_Main_AlarmClock_Form::alarmClock_delete(alarmClock_set *alarm_clock_s
 {
     int index = ui->treeWidget_alarm_clock->
             indexOfTopLevelItem(alarm_clock_set);
-    ui->treeWidget_alarm_clock->takeTopLevelItem(index);
+    auto remove_item = ui->treeWidget_alarm_clock->takeTopLevelItem(index);
+    delete ((alarmClock_set*)remove_item);
 }
 
 bool Clock_Main_AlarmClock_Form::compare_alarm_clock_day_time_and_now(Alarm_Clock alarm_clock)
@@ -136,6 +137,7 @@ void Clock_Main_AlarmClock_Form::pushButton_alarmClock_add_new_clicked()
     {
         alarmClock_add(new_alarm_clock_dialog->get_alarm_clock_setting());
     }
+    new_alarm_clock_dialog->deleteLater();
 }
 void Clock_Main_AlarmClock_Form::pushButton_alarmClock_edit_clicked()
 {
@@ -146,6 +148,7 @@ void Clock_Main_AlarmClock_Form::pushButton_alarmClock_edit_clicked()
         alarmClock_edit(new_alarm_clock_dialog->get_alarm_clock_setting(),
                         m_alarm_clock_item_last_clicked);
     }
+    new_alarm_clock_dialog->deleteLater();
 }
 void Clock_Main_AlarmClock_Form::pushButton_alarmClock_delete_clicked()
 {
@@ -239,6 +242,7 @@ void Clock_Main_AlarmClock_Form::alarmClockTreeWidgetItem_rightKey_menu_clicked(
         menu_treeWidget->addAction("删除闹钟", this, SLOT(pushButton_alarmClock_delete_clicked()));
     }
     menu_treeWidget->exec(QCursor::pos());
+    menu_treeWidget->deleteLater();
 }
 
 void Clock_Main_AlarmClock_Form::do_when_alarmClock_to_be_stop_remind()

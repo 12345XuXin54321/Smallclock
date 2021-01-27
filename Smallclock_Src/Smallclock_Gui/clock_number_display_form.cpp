@@ -8,6 +8,7 @@ Clock_Number_Display_Form::Clock_Number_Display_Form(QWidget *parent) :
     ui(new Ui::Clock_Number_Display_Form)
 {
     ui->setupUi(this);
+
     m_flickered_remind_timer = new QTimer();
     connect(m_flickered_remind_timer, SIGNAL(timeout()), this, SLOT(do_to_flickered_remind()));
 }
@@ -107,5 +108,25 @@ void Clock_Number_Display_Form::set_style(bool value)
     else
     {
         this->setStyleSheet("color: rgb(20, 20, 20);");
+    }
+}
+
+void Clock_Number_Display_Form::resizeEvent(QResizeEvent * event)
+{
+    //当前宽高
+    double new_width = event->size().width();
+    double new_height = event->size().height();
+    //太宽了
+    if (new_width * m_width_height_ratio.height_of_form >
+            new_height * m_width_height_ratio.width_of_form)
+    {
+        new_width = new_height * m_width_height_ratio.width_of_form /  m_width_height_ratio.height_of_form;
+        resize(new_width, new_height);
+    }
+    else if(new_width * m_width_height_ratio.height_of_form <
+            new_height * m_width_height_ratio.width_of_form)
+    {
+        new_height = new_width * m_width_height_ratio.height_of_form / m_width_height_ratio.width_of_form;
+        resize(new_width, new_height);
     }
 }

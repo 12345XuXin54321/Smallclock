@@ -64,6 +64,11 @@
      </column>
      <column>
       <property name="text">
+       <string>音乐位置</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>开关</string>
       </property>
      </column>

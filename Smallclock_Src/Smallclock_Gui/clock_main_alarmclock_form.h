@@ -89,9 +89,20 @@ private:
     class alarmClock_set : public QTreeWidgetItem
     {
     public:
+        enum type_of_item
+        {
+            name_of_alarm_clock = 0,
+            time_of_start = 1,
+            type_of_time = 2,
+            messages_that_send = 3,
+            path_of_command = 4,
+            path_of_music = 5,
+            is_turn_on = 6
+        };
+
         alarmClock_set(Alarm_Clock alarm_clock)
         {
-            QTreeWidgetItem(6);
+            QTreeWidgetItem(7);
             edit_alarm_clock(alarm_clock);
         }
 
@@ -113,7 +124,7 @@ private:
         {
             m_alarm_clock = alarm_clock;
             m_longlongint_secsSince1Jan1970UTC_last_remind = 0;
-            show_alarmClock_date();
+            stop_remind();
         }
 
         void start_remind()
@@ -156,17 +167,26 @@ private:
         void show_alarmClock_date()
         {
             //is turn on
-            this->setText(5, QString(get_str_alarm_clock_state().c_str()));
+            this->setText(is_turn_on,
+                          QString(get_str_alarm_clock_state().c_str()));
+            //music
+            this->setText(path_of_music,
+                          QString(m_alarm_clock.m_alarm_clock_data.str_music_path.c_str()));
             //command
-            this->setText(4, QString(m_alarm_clock.m_alarm_clock_data.str_command_path.c_str()));
+            this->setText(path_of_command,
+                          QString(m_alarm_clock.m_alarm_clock_data.str_command_path.c_str()));
             //message
-            this->setText(3, QString(m_alarm_clock.m_alarm_clock_data.str_message.c_str()));
+            this->setText(messages_that_send,
+                          QString(m_alarm_clock.m_alarm_clock_data.str_message.c_str()));
             //次数
-            this->setText(2, QString(m_alarm_clock.get_str_timeType_choose_range().c_str()));
+            this->setText(type_of_time,
+                          QString(m_alarm_clock.get_str_timeType_choose_range().c_str()));
             //time
-            this->setText(1, QString(m_alarm_clock.get_str_time().c_str()));
+            this->setText(time_of_start,
+                          QString(m_alarm_clock.get_str_time().c_str()));
             //name
-            this->setText(0, QString(m_alarm_clock.m_alarm_clock_data.str_alarm_clock_name.c_str()));
+            this->setText(name_of_alarm_clock,
+                          QString(m_alarm_clock.m_alarm_clock_data.str_alarm_clock_name.c_str()));
 
         }
 
