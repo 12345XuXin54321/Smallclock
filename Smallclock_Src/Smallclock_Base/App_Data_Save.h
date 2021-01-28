@@ -3,19 +3,22 @@
 
 #include <string>
 #include <fstream>
+#include <bits/stdc++.h>
+#include <sys/stat.h>
+#include <QDir>
 
 using namespace std;
 
 class App_Data_Save
 {
 private:
-    string m_str_data_path;
+    string m_str_data_name_full;
     ifstream* m_if_data_read = 0;
     ofstream* m_of_data_save = 0;
 
     bool open_infile()
     {
-        m_if_data_read = new ifstream(m_str_data_path);
+        m_if_data_read = new ifstream(m_str_data_name_full);
         return m_if_data_read->is_open();
     }
     void close_infile()
@@ -30,7 +33,7 @@ private:
 
     bool open_outfile()
     {
-        m_of_data_save = new ofstream(m_str_data_path);
+        m_of_data_save = new ofstream(m_str_data_name_full);
         return m_of_data_save->is_open();
     }
     void close_outfile()
@@ -43,9 +46,14 @@ private:
         }
     }
 public:
-    App_Data_Save(string data_path)
+    App_Data_Save(string data_path, string file_name)
     {
-        m_str_data_path = data_path;
+        QDir q_dir(QString(data_path.c_str()));
+        if(q_dir.exists() == false)
+        {
+            q_dir.mkpath(QString(data_path.c_str()));
+        }
+        m_str_data_name_full = data_path + "/" + file_name;
     }
     ~App_Data_Save()
     {

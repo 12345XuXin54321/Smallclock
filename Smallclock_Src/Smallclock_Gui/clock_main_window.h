@@ -42,7 +42,7 @@ private:
     QAction* m_action_menu_systemTray_show_hide;
     QAction* m_action_menu_systemTray_exit;
 
-    App_Data_Save m_save_data = App_Data_Save(".Smallclock_Data");
+    App_Data_Save m_save_data = App_Data_Save(string(getenv("HOME")) + "/.config/Smallclock", "Smallclock_Data");
 
     __int128 get_tv_time_now();
 

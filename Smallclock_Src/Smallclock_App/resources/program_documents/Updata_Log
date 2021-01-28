@@ -1,6 +1,4 @@
-2021/01/27
-Smallclock--1.1.1.20210127--Release--fix-bug
-bug修复版本(使用Qt5.15.2):
-1.修复闹钟页未显示音乐路径的bug
-2.修复若干处内存泄露
-3.关于页添加更新日志
+2021/01/28
+Smallclock--1.1.2.20210128--Release
+优化版本:
+1.调整数据文件位置为"${HOME}/.config/Smallclock/Smallclock_Data"
